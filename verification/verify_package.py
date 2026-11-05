@@ -28,7 +28,7 @@ def digest(path):
 def inventory():
     items = {}
     for base, dirs, files in os.walk(ROOT, followlinks=False):
-        dirs[:] = [name for name in dirs if name != '__pycache__' and
+        dirs[:] = [name for name in dirs if name not in {'.git', '__pycache__'} and
                    (Path(base)/name).relative_to(ROOT).as_posix() not in
                    {'.venv-sim', 'orin/piper/.venv', 'sim/logs', 'sim/bin', 'build',
                     '103/rl_deploy/build', '103/rl_deploy/build_vr',

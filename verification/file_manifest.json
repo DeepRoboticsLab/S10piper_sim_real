@@ -3299,14 +3299,14 @@
   },
   "README.md": {
     "type": "file",
-    "size": 11288,
-    "sha256": "9734b1cbbc13a9dee481ecc8013dc2219764377d3d8123149e0bca6aab797907",
+    "size": 11355,
+    "sha256": "78031cc1c14aa064f172027644998bc786eb421e7c638716fd3d312e26511709",
     "execute_bits": 0
   },
-  "README_先看这里.md": {
+  "README_EN.md": {
     "type": "file",
-    "size": 120,
-    "sha256": "5f181e9ec885f70eaf84a5f0cc5f3bc3914ed55376035f124ac5ac995621b1b1",
+    "size": 13760,
+    "sha256": "020aeb344bbd8f79ecd2de526ac48ea46c861044173245573a47efdb0173595a",
     "execute_bits": 0
   },
   "build.sh": {
@@ -3653,8 +3653,8 @@
   },
   "verification/verify_package.py": {
     "type": "file",
-    "size": 3478,
-    "sha256": "e8a7a0fac526c2a101a825d1256d9b4902e7574f4326e8a1b0832b2d8b195462",
+    "size": 3492,
+    "sha256": "ffbe5b238e4ee86806765f76f62133508b78d16e2dd3e0c78c2d520a3017375b",
     "execute_bits": 0
   }
 }

@@ -1,10 +1,12 @@
-# S10 + Piper RL Deploy
+# S10 + Piper 强化学习部署
+
+[English](README_EN.md) | 简体中文
 
 将 Piper 机械臂装到 S10 机器狗上，运行足臂协同策略。本项目包含电脑仿真、103 实物部署，以及 Pico VR 控制。先在仿真中熟悉按键，再将同一套操作用到实物。
 
 项目目录为 `S10piper_sim_real`，模型为 `103/rl_deploy/policy/ppo/policy.onnx`，控制程序为 `rl_deploy`。以下按发布包解压到电脑 home 目录说明；解压到其他位置时，修改进入项目的路径即可。
 
-## 1. Sim-to-Sim
+## 1. 仿真到仿真
 
 ### 配置环境并启动
 
@@ -53,7 +55,7 @@ cd "$HOME/S10piper_sim_real/sim"  # 进入仿真目录
 
 仿真只使用本机回环通信，不连接实物。终端保留简短英文状态和故障提示，完整日志位于 `sim/logs/本次运行目录/run.log`。
 
-## 2. Sim-to-Real
+## 2. 仿真到实物
 
 ### 安装与连接
 
@@ -133,7 +135,7 @@ cd /home/user/rl_deploy  # 进入 103 控制程序目录
 
 正常结束，**先在 103 控制终端按 `Ctrl+C`**，等待机器狗完成蹲下、机械臂回零及 SDK 退出，再关闭 Orin 机械臂服务。直接在 Orin 终端按 `Ctrl+C` 不会执行回零。遇到危险使用硬件急停，不依赖正常退出流程。
 
-## 3. Pico VR 控制
+## 3. Pico 虚拟现实控制
 
 ### 启动顺序
 
