@@ -8,22 +8,6 @@ English | [简体中文](README.md)
 
 <p align="center">S10 and Piper coordinated-control demo (muted, 1.2× speed, looping)</p>
 
-```text
-S10piper_sim_real/
-├── 103/
-│   └── rl_deploy/
-├── orin/
-│   ├── piper/
-│   └── pico_bridge/
-├── sim/
-├── docs/
-│   └── images/
-├── verification/
-├── README.md
-├── README_EN.md
-└── SHA256SUMS
-```
-
 Mount a Piper robotic arm on an S10 quadruped and run a coordinated whole-body policy. This repository includes PC simulation, deployment on the S10 controller (referred to as **103** below), and Pico VR control. Start with simulation to learn the controls, then use the same controls on the real robot.
 
 The project directory is `S10piper_sim_real`, the policy is `103/rl_deploy/policy/ppo/policy.onnx`, and the deployment program is `rl_deploy`. The commands below assume the release package is extracted directly under the PC user's home directory. If you extract it elsewhere, adjust the project path accordingly.
@@ -241,3 +225,20 @@ Normal operation uses the short launch commands shown above. Do not add manual `
 Leg gains are Kp/Kd = 60/1, and wheel gains are 0/0.4. The policy and control protections are unchanged. A successful simulation run does not prove long-term stability on real hardware.
 
 The directory structure is inspired by [Lite3_rl_deploy](https://github.com/DeepRoboticsLab/Lite3_rl_deploy). `103/rl_deploy/vendor/drdds` is based on the official DEEPRobotics `deep-robotics-msg` package and retains its BSD-3-Clause license. Redistribution rights for the model, meshes, and other third-party dependencies must be reviewed separately. Never publish device passwords, private keys, or licensed software. See [verification/ORIGIN.md](verification/ORIGIN.md) for provenance and validation limits.
+
+## Project Structure
+
+```text
+S10piper_sim_real/
+├── 103/                         # Deployment files for the onboard S10 controller
+│   └── rl_deploy/               # Policy, control source, build scripts, and launch scripts
+├── orin/                        # Programs running on Orin
+│   ├── piper/                   # Piper CAN communication, homing, and real-time control service
+│   └── pico_bridge/             # Pico tracking receiver and VR command bridge
+├── sim/                         # PC MuJoCo simulation, dependencies, and launch scripts
+├── docs/                        # Documentation assets used by the README files
+│   └── images/                  # Demo animation, hardware photo, and operation screenshots
+├── verification/                # Provenance notes and offline release-integrity checks
+├── README.md                    # Chinese deployment guide
+└── README_EN.md                 # English deployment guide
+```

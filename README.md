@@ -8,22 +8,6 @@
 
 <p align="center">S10 与 Piper 足臂协同演示（静音、1.2 倍速、自动循环）</p>
 
-```text
-S10piper_sim_real/
-├── 103/
-│   └── rl_deploy/
-├── orin/
-│   ├── piper/
-│   └── pico_bridge/
-├── sim/
-├── docs/
-│   └── images/
-├── verification/
-├── README.md
-├── README_EN.md
-└── SHA256SUMS
-```
-
 将 Piper 机械臂装到 S10 机器狗上，运行足臂协同策略。本项目包含电脑仿真、103 实物部署，以及 Pico VR 控制。先在仿真中熟悉按键，再将同一套操作用到实物。
 
 项目目录为 `S10piper_sim_real`，模型为 `103/rl_deploy/policy/ppo/policy.onnx`，控制程序为 `rl_deploy`。以下按发布包解压到电脑 home 目录说明；解压到其他位置时，修改进入项目的路径即可。
@@ -241,3 +225,20 @@ DEFAULT_ARM_SCALE = 1.5  # 手移动 10cm，机械臂目标约移动 15cm
 腿 Kp/Kd 为 60/1，轮为 0/0.4。模型和控制保护未修改，仿真通过不代表实物长期稳定。
 
 目录组织参考 [Lite3_rl_deploy](https://github.com/DeepRoboticsLab/Lite3_rl_deploy)。`103/rl_deploy/vendor/drdds` 来自 DEEPRobotics 官方 `deep-robotics-msg`，保留其 BSD-3-Clause 许可证。模型、网格及其他第三方依赖的再分发许可需分别确认；不要公开设备密码、密钥或授权。来源与测试边界见 [verification/ORIGIN.md](verification/ORIGIN.md)。
+
+## 项目结构
+
+```text
+S10piper_sim_real/
+├── 103/                         # S10 机载 103 控制器部署文件
+│   └── rl_deploy/               # 策略模型、控制源码、编译和运行脚本
+├── orin/                        # Orin 侧程序
+│   ├── piper/                   # Piper CAN 通信、回零和实时控制服务
+│   └── pico_bridge/             # Pico 手柄数据接收与 VR 指令桥接
+├── sim/                         # 电脑端 MuJoCo 仿真、环境依赖和启动脚本
+├── docs/                        # README 使用的项目文档资源
+│   └── images/                  # 演示动画、硬件照片和操作截图
+├── verification/                # 来源说明及离线发布包完整性校验
+├── README.md                    # 中文部署说明
+└── README_EN.md                 # 英文部署说明
+```
