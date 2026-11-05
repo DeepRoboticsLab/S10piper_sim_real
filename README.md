@@ -2,6 +2,12 @@
 
 [English](README_EN.md) | 简体中文
 
+<p align="center">
+  <img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 与 Piper 足臂协同仿真演示" width="640">
+</p>
+
+<p align="center">S10 与 Piper 足臂协同演示（静音、1.2 倍速、自动循环）</p>
+
 ```text
 S10piper_sim_real/
 ├── 103/

@@ -2,6 +2,12 @@
 
 English | [简体中文](README.md)
 
+<p align="center">
+  <img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 and Piper coordinated simulation demo" width="640">
+</p>
+
+<p align="center">S10 and Piper coordinated-control demo (muted, 1.2× speed, looping)</p>
+
 ```text
 S10piper_sim_real/
 ├── 103/

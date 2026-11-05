@@ -3299,14 +3299,14 @@
   },
   "README.md": {
     "type": "file",
-    "size": 12577,
-    "sha256": "7bd9ca8d8d5350116d929d33c77c98743b8df0b97267e598dcaac48c8eb86735",
+    "size": 12805,
+    "sha256": "f5ed47fdf902c2e9b024b5d3efe38d64b9a739c3ba146f8e57ec3aa9295c0ccd",
     "execute_bits": 0
   },
   "README_EN.md": {
     "type": "file",
-    "size": 15101,
-    "sha256": "4cba44ded23976cde8100a99f4f17dbc5fded45604f4d6677caeb1798d7d2b3f",
+    "size": 15328,
+    "sha256": "3a247d9102b1ea02e47d32706012c86ee22876cfbfa2472351e99a992aea3296",
     "execute_bits": 0
   },
   "build.sh": {
@@ -3319,6 +3319,12 @@
     "type": "file",
     "size": 2565943,
     "sha256": "e0d5f5653d840f3bc537d1805b387ab2b9a3025b73f937545c23198d6e023656",
+    "execute_bits": 0
+  },
+  "docs/images/s10_piper_demo_1_2x.gif": {
+    "type": "file",
+    "size": 12512776,
+    "sha256": "c85ea03b13c2849193f471e57452cab55e2edbbaf085d54b6176607cd38fec6c",
     "execute_bits": 0
   },
   "docs/images/vr_scale_setting.png": {
