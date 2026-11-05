@@ -3299,14 +3299,14 @@
   },
   "README.md": {
     "type": "file",
-    "size": 12805,
-    "sha256": "f5ed47fdf902c2e9b024b5d3efe38d64b9a739c3ba146f8e57ec3aa9295c0ccd",
+    "size": 12796,
+    "sha256": "bd532f8263891dfb1fc808d8464a14d06613465a30013299566fe91b94f64a21",
     "execute_bits": 0
   },
   "README_EN.md": {
     "type": "file",
-    "size": 15328,
-    "sha256": "3a247d9102b1ea02e47d32706012c86ee22876cfbfa2472351e99a992aea3296",
+    "size": 15317,
+    "sha256": "1947ddbc525a7e781631f8c58e0e2f460d5b2f9f5956664a8338d6f083e01369",
     "execute_bits": 0
   },
   "build.sh": {

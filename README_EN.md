@@ -28,7 +28,7 @@ Mount a Piper robotic arm on an S10 quadruped and run a coordinated whole-body p
 
 The project directory is `S10piper_sim_real`, the policy is `103/rl_deploy/policy/ppo/policy.onnx`, and the deployment program is `rl_deploy`. The commands below assume the release package is extracted directly under the PC user's home directory. If you extract it elsewhere, adjust the project path accordingly.
 
-## 1. Simulation
+## 1. Sim-to-Sim
 
 ### Set up and run
 
@@ -77,7 +77,7 @@ For a basic demonstration, tap `o` to lower the end effector and body, then tap 
 
 Simulation uses local loopback communication only and does not connect to the real robot. The terminal displays short English status and fault messages. The full log is stored under `sim/logs/<current-run>/run.log`.
 
-## 2. Sim-to-Real Deployment
+## 2. Sim-to-Real
 
 ### Hardware installation and network
 

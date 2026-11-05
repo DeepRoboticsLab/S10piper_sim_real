@@ -28,7 +28,7 @@ S10piper_sim_real/
 
 项目目录为 `S10piper_sim_real`，模型为 `103/rl_deploy/policy/ppo/policy.onnx`，控制程序为 `rl_deploy`。以下按发布包解压到电脑 home 目录说明；解压到其他位置时，修改进入项目的路径即可。
 
-## 1. 仿真到仿真
+## 1. Sim-to-Sim
 
 ### 配置环境并启动
 
@@ -77,7 +77,7 @@ cd "$HOME/S10piper_sim_real/sim"  # 进入仿真目录
 
 仿真只使用本机回环通信，不连接实物。终端保留简短英文状态和故障提示，完整日志位于 `sim/logs/本次运行目录/run.log`。
 
-## 2. 仿真到实物
+## 2. Sim-to-Real
 
 ### 安装与连接
 
