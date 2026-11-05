@@ -6,7 +6,7 @@ English | [简体中文](README.md)
   <img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 and Piper coordinated simulation demo" width="640">
 </p>
 
-<p align="center">S10 and Piper coordinated-control demo (muted, 1.2× speed, looping)</p>
+<p align="center">S10 and Piper coordinated-control demo </p>
 
 Mount a Piper robotic arm on an S10 quadruped and run a coordinated whole-body policy. This repository includes PC simulation, deployment on the S10 controller (referred to as **103** below), and Pico VR control. Start with simulation to learn the controls, then use the same controls on the real robot.
 
@@ -67,7 +67,7 @@ Simulation uses local loopback communication only and does not connect to the re
 
 Secure the Piper arm, Orin, and all cables before deployment. Follow the manufacturers' documentation to prepare the S10 SDK, communication environment, and control permission. Install the Piper SDK and its dependencies on Orin.
 
-On the reference robot, the three side aviation connectors are two integrated Ethernet/24 V connectors and one 72 V connector. Piper uses 24 V power, while Orin is powered through a 72 V-to-19 V regulator. **This describes the reference robot only and must not be copied blindly. Before wiring, verify the actual pinout, polarity, rated voltage, and converter capacity. Never connect 72 V directly to Piper or Orin.** Keep the robot safely supported, clear the full arm workspace, and keep the hardware emergency stop accessible.
+On the reference robot, the three side aviation connectors are two integrated Ethernet/24 V connectors and one 72 V connector. Piper uses 24 V power, while Orin is powered through a 72 V-to-19 V regulator. Keep the robot safely supported, clear the full arm workspace, and keep the hardware emergency stop accessible.
 
 ![Two 24 V plus network aviation connectors and one 72 V power aviation connector on the reference S10](docs/images/hardware_installation.png)
 
@@ -222,9 +222,6 @@ Normal operation uses the short launch commands shown above. Do not add manual `
 
 ## Notes
 
-Leg gains are Kp/Kd = 60/1, and wheel gains are 0/0.4. The policy and control protections are unchanged. A successful simulation run does not prove long-term stability on real hardware.
-
-The directory structure is inspired by [Lite3_rl_deploy](https://github.com/DeepRoboticsLab/Lite3_rl_deploy). `103/rl_deploy/vendor/drdds` is based on the official DEEPRobotics `deep-robotics-msg` package and retains its BSD-3-Clause license. Redistribution rights for the model, meshes, and other third-party dependencies must be reviewed separately. Never publish device passwords, private keys, or licensed software. See [verification/ORIGIN.md](verification/ORIGIN.md) for provenance and validation limits.
 
 ## Project Structure
 
