@@ -69,9 +69,9 @@ cd "$HOME/S10piper_sim_real/sim"  # 进入仿真目录
 
 讲稿中的样机，侧面三个航插从左到右为两路集成网口的 24V 接口和一路 72V 接口；Piper 使用 24V 供电，Orin 经 72V 转 19V 稳压模块供电。**这些是样机配置，不可直接套用到所有设备：接线前必须核对实际接口定义、极性、额定电压及模块功率，禁止将 72V 直接接入 Piper 或 Orin。** 测试时确保机器狗安全支撑、机械臂完整路径无人、急停可用。
 
-![S10 Piper 与 Orin 样机安装和供电连接](docs/images/hardware_installation.jpeg)
+![S10 的两路 24V 加网口航插与一路 72V 电源航插](docs/images/hardware_installation.png)
 
-*图 1　演讲稿中的样机安装与供电示意；读者必须以自己设备的接口定义为准。*
+*图 1　样机的两路 24V 加网口航插与一路 72V 电源航插；读者必须以自己设备的接口定义为准。*
 
 本说明采用讲稿中的 Wi-Fi 方案：电脑与 Orin 都连接机器狗热点；103 运行策略，Orin 控制机械臂。Piper 与 Orin 通过 USB-CAN / SocketCAN 通信。
 

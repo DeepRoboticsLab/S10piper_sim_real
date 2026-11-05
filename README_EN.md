@@ -69,9 +69,9 @@ Secure the Piper arm, Orin, and all cables before deployment. Follow the manufac
 
 On the reference robot, the three side aviation connectors are two integrated Ethernet/24 V connectors and one 72 V connector. Piper uses 24 V power, while Orin is powered through a 72 V-to-19 V regulator. **This describes the reference robot only and must not be copied blindly. Before wiring, verify the actual pinout, polarity, rated voltage, and converter capacity. Never connect 72 V directly to Piper or Orin.** Keep the robot safely supported, clear the full arm workspace, and keep the hardware emergency stop accessible.
 
-![Reference S10 Piper and Orin installation and power connections](docs/images/hardware_installation.jpeg)
+![Two 24 V plus network aviation connectors and one 72 V power aviation connector on the reference S10](docs/images/hardware_installation.png)
 
-*Figure 1. Installation and power arrangement used in the presentation. Follow the pinout of your own hardware.*
+*Figure 1. Two 24 V plus network connectors and one 72 V power connector on the reference robot. Follow the pinout of your own hardware.*
 
 This guide uses the Wi-Fi arrangement from the demonstration: the PC and Orin connect to the robot hotspot, 103 runs the policy, and Orin controls Piper. Piper communicates with Orin through USB-CAN / SocketCAN.
 

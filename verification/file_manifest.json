@@ -3299,14 +3299,14 @@
   },
   "README.md": {
     "type": "file",
-    "size": 13429,
-    "sha256": "99b15ffb75e1e486c26c5ef8db871df7203914cedcb2ddf7ab5b5425eb850cb6",
+    "size": 13460,
+    "sha256": "7199adda23cdeb1bf9206dbd9c2d005ce54be483eca7d3e7d6445bd4f5e91f91",
     "execute_bits": 0
   },
   "README_EN.md": {
     "type": "file",
-    "size": 16047,
-    "sha256": "f5bed96b9d426d504c096b7875fbd3bbf8d58bbe4f9527d1c1571187e1695e3d",
+    "size": 16108,
+    "sha256": "dd3d95f935dc34b1d4a3f6ab5a53ac86e8500f435841facd26ca4724b5f18b74",
     "execute_bits": 0
   },
   "build.sh": {
@@ -3315,10 +3315,10 @@
     "sha256": "2f5ca7dcda40c7fbb9f0b989c29b0a735552ce9d85b0595e37df86322bd3619e",
     "execute_bits": 73
   },
-  "docs/images/hardware_installation.jpeg": {
+  "docs/images/hardware_installation.png": {
     "type": "file",
-    "size": 2565943,
-    "sha256": "e0d5f5653d840f3bc537d1805b387ab2b9a3025b73f937545c23198d6e023656",
+    "size": 2943710,
+    "sha256": "c968d65f7e31a74f04e7d2f2253ee97a474d96546a553349bf308e8f562c3313",
     "execute_bits": 0
   },
   "docs/images/s10_piper_demo_1_2x.gif": {
