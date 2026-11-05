@@ -2,6 +2,22 @@
 
 [English](README_EN.md) | 简体中文
 
+```text
+S10piper_sim_real/
+├── 103/
+│   └── rl_deploy/
+├── orin/
+│   ├── piper/
+│   └── pico_bridge/
+├── sim/
+├── docs/
+│   └── images/
+├── verification/
+├── README.md
+├── README_EN.md
+└── SHA256SUMS
+```
+
 将 Piper 机械臂装到 S10 机器狗上，运行足臂协同策略。本项目包含电脑仿真、103 实物部署，以及 Pico VR 控制。先在仿真中熟悉按键，再将同一套操作用到实物。
 
 项目目录为 `S10piper_sim_real`，模型为 `103/rl_deploy/policy/ppo/policy.onnx`，控制程序为 `rl_deploy`。以下按发布包解压到电脑 home 目录说明；解压到其他位置时，修改进入项目的路径即可。
@@ -63,6 +79,10 @@ cd "$HOME/S10piper_sim_real/sim"  # 进入仿真目录
 
 讲稿中的样机，侧面三个航插从左到右为两路集成网口的 24V 接口和一路 72V 接口；Piper 使用 24V 供电，Orin 经 72V 转 19V 稳压模块供电。**这些是样机配置，不可直接套用到所有设备：接线前必须核对实际接口定义、极性、额定电压及模块功率，禁止将 72V 直接接入 Piper 或 Orin。** 测试时确保机器狗安全支撑、机械臂完整路径无人、急停可用。
 
+![S10 Piper 与 Orin 样机安装和供电连接](docs/images/hardware_installation.jpeg)
+
+*图 1　演讲稿中的样机安装与供电示意；读者必须以自己设备的接口定义为准。*
+
 本说明采用讲稿中的 Wi-Fi 方案：电脑与 Orin 都连接机器狗热点；103 运行策略，Orin 控制机械臂。Piper 与 Orin 通过 USB-CAN / SocketCAN 通信。
 
 ```text
@@ -78,7 +98,7 @@ sudo nmcli radio wifi on  # 开启 Wi-Fi
 sudo nmcli --ask device wifi connect "你的机器狗热点名称"  # 连接热点，按提示输入密码
 ```
 
-下文使用样机地址：103 为 `10.21.33.103`，Orin 为 `10.21.41.12`。使用默认 SSH 22 端口，按提示输入各自设备的账号密码，不要求预先配置密钥。首次连接核对设备指纹；换设备先修改文末列出的地址配置。
+下文使用样机地址：103 为 `10.21.33.103`，Orin 为 `10.21.41.12`。**其中 `10.21.41.12` 是作者当前样机的 Orin IP，不是通用地址；读者必须替换为自己 Orin 在机器狗网络中的实际 IP，包括下面所有 SSH、SCP、XRoboToolkit 和配置文件中的地址。** 使用默认 SSH 22 端口，按提示输入各自设备的账号密码，不要求预先配置密钥。首次连接核对设备指纹；换设备先修改文末列出的地址配置。
 
 ### 传文件到 103 和 Orin
 
@@ -156,7 +176,11 @@ cd /home/user/pico_bridge  # 进入 VR 桥接目录
 ./run_vr_bridge.sh  # 接收手柄数据并发送到 103，默认倍率 1.5
 ```
 
-Pico 连接机器狗 Wi-Fi，打开 XRoboToolkit，连接 Orin（样机为 `10.21.41.12`）。确认 Network 显示绿色 `WORKING`，勾选 `Controller` 和 `Send`；Orin 收到手柄位置数据后，在 103 启动 VR 版：
+Pico 连接机器狗 Wi-Fi，打开 XRoboToolkit，连接读者自己 Orin 的实际 IP（图中作者样机为 `10.21.41.12`）。确认 Network 显示绿色 `WORKING`，勾选 `Controller` 和 `Send`；Orin 收到手柄位置数据后，在 103 启动 VR 版：
+
+![XRoboToolkit 连接 Orin 并发送 Pico 手柄数据](docs/images/xrobotoolkit_connection.png)
+
+*图 2　XRoboToolkit 的连接状态示例；PC Service 地址应改为读者自己的 Orin IP。*
 
 ```bash
 cd /home/user/rl_deploy  # 进入 103 控制程序目录
@@ -184,6 +208,10 @@ cd /home/user/rl_deploy  # 进入 103 控制程序目录
 ```python
 DEFAULT_ARM_SCALE = 1.5  # 手移动 10cm，机械臂目标约移动 15cm
 ```
+
+![VR 位移倍率代码位置](docs/images/vr_scale_setting.png)
+
+*图 3　`DEFAULT_ARM_SCALE` 在桥接脚本中的位置。*
 
 改为 `2.0`，即手移动 10cm，目标约移动 20cm。保存后停止并重新运行 `./run_vr_bridge.sh`，不需要编译，也不需要在命令后加参数。
 

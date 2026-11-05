@@ -2,6 +2,22 @@
 
 English | [简体中文](README.md)
 
+```text
+S10piper_sim_real/
+├── 103/
+│   └── rl_deploy/
+├── orin/
+│   ├── piper/
+│   └── pico_bridge/
+├── sim/
+├── docs/
+│   └── images/
+├── verification/
+├── README.md
+├── README_EN.md
+└── SHA256SUMS
+```
+
 Mount a Piper robotic arm on an S10 quadruped and run a coordinated whole-body policy. This repository includes PC simulation, deployment on the S10 controller (referred to as **103** below), and Pico VR control. Start with simulation to learn the controls, then use the same controls on the real robot.
 
 The project directory is `S10piper_sim_real`, the policy is `103/rl_deploy/policy/ppo/policy.onnx`, and the deployment program is `rl_deploy`. The commands below assume the release package is extracted directly under the PC user's home directory. If you extract it elsewhere, adjust the project path accordingly.
@@ -63,6 +79,10 @@ Secure the Piper arm, Orin, and all cables before deployment. Follow the manufac
 
 On the reference robot, the three side aviation connectors are two integrated Ethernet/24 V connectors and one 72 V connector. Piper uses 24 V power, while Orin is powered through a 72 V-to-19 V regulator. **This describes the reference robot only and must not be copied blindly. Before wiring, verify the actual pinout, polarity, rated voltage, and converter capacity. Never connect 72 V directly to Piper or Orin.** Keep the robot safely supported, clear the full arm workspace, and keep the hardware emergency stop accessible.
 
+![Reference S10 Piper and Orin installation and power connections](docs/images/hardware_installation.jpeg)
+
+*Figure 1. Installation and power arrangement used in the presentation. Follow the pinout of your own hardware.*
+
 This guide uses the Wi-Fi arrangement from the demonstration: the PC and Orin connect to the robot hotspot, 103 runs the policy, and Orin controls Piper. Piper communicates with Orin through USB-CAN / SocketCAN.
 
 ```text
@@ -78,7 +98,7 @@ sudo nmcli radio wifi on  # Enable Wi-Fi
 sudo nmcli --ask device wifi connect "YOUR_ROBOT_HOTSPOT"  # Connect and enter the password when prompted
 ```
 
-The reference addresses below are `10.21.33.103` for 103 and `10.21.41.12` for Orin. The examples use the default SSH port 22 and prompt for each device's account password; preconfigured SSH keys are not required. Verify the host fingerprint on the first connection. For another robot, update the configuration files listed in Section 4.
+The reference addresses below are `10.21.33.103` for 103 and `10.21.41.12` for Orin. **`10.21.41.12` is the author's current reference-Orin address, not a universal default. Replace it with the actual address of your own Orin on the robot network everywhere below, including SSH, SCP, XRoboToolkit, and configuration files.** The examples use the default SSH port 22 and prompt for each device's account password; preconfigured SSH keys are not required. Verify the host fingerprint on the first connection. For another robot, update the configuration files listed in Section 4.
 
 ### Copy files to 103 and Orin
 
@@ -156,7 +176,11 @@ cd /home/user/pico_bridge  # Enter the VR bridge directory
 ./run_vr_bridge.sh  # Receive controller tracking and forward commands to 103; default scale is 1.5
 ```
 
-Connect Pico to the robot Wi-Fi, open XRoboToolkit, and connect to Orin (`10.21.41.12` on the reference robot). Confirm that Network shows green `WORKING`, then enable `Controller` and `Send`. After Orin receives controller tracking data, start VR mode on 103:
+Connect Pico to the robot Wi-Fi, open XRoboToolkit, and connect to the actual IP of your own Orin (`10.21.41.12` is only the reference address shown in the figure). Confirm that Network shows green `WORKING`, then enable `Controller` and `Send`. After Orin receives controller tracking data, start VR mode on 103:
+
+![XRoboToolkit connected to Orin and sending Pico controller data](docs/images/xrobotoolkit_connection.png)
+
+*Figure 2. XRoboToolkit connection example. Replace the PC Service address with the IP of your own Orin.*
 
 ```bash
 cd /home/user/rl_deploy  # Enter the deployment directory on 103
@@ -184,6 +208,10 @@ Edit `/home/user/pico_bridge/s10_piper_vr_bridge.py` on Orin near the top of the
 ```python
 DEFAULT_ARM_SCALE = 1.5  # 10 cm of hand motion produces about 15 cm of arm-target motion
 ```
+
+![Location of the VR displacement-scale setting](docs/images/vr_scale_setting.png)
+
+*Figure 3. Location of `DEFAULT_ARM_SCALE` in the bridge script.*
 
 For example, change it to `2.0` for approximately 20 cm of arm-target motion from 10 cm of hand motion. Save the file, stop the bridge, and restart `./run_vr_bridge.sh`. No compilation or command-line suffix is required.
 

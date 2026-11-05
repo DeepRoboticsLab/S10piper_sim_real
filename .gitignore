@@ -5,6 +5,7 @@ pc_real/build/
 pc_real/ros_ws/build/
 pc_real/ros_ws/install/
 sim/build/
+sim/bin/
 build/
 103/rl_deploy/build/
 103/rl_deploy/build_vr/

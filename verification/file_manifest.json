@@ -1,8 +1,8 @@
 {
   ".gitignore": {
     "type": "file",
-    "size": 401,
-    "sha256": "710b212b40ef32499961c456a1f468a011ebf907c906effc1fc06eb2455681e1",
+    "size": 410,
+    "sha256": "0520601c34222bc2a8570fe5921cdd6753e2b6f8adefa8257e250c8645b3e857",
     "execute_bits": 0
   },
   "103/rl_deploy/CMakeLists.txt": {
@@ -3299,14 +3299,14 @@
   },
   "README.md": {
     "type": "file",
-    "size": 11504,
-    "sha256": "dc32c7b77301c09e41317b824e7de52a68767eaeb9cbeb05018aca5e93e7b599",
+    "size": 12577,
+    "sha256": "7bd9ca8d8d5350116d929d33c77c98743b8df0b97267e598dcaac48c8eb86735",
     "execute_bits": 0
   },
   "README_EN.md": {
     "type": "file",
-    "size": 13933,
-    "sha256": "c905cbd2e2d73ba10e9b26b360ae1ae7cb22131fbf6e2e05446b64066b7f59e6",
+    "size": 15101,
+    "sha256": "4cba44ded23976cde8100a99f4f17dbc5fded45604f4d6677caeb1798d7d2b3f",
     "execute_bits": 0
   },
   "build.sh": {
@@ -3314,6 +3314,24 @@
     "size": 641,
     "sha256": "2f5ca7dcda40c7fbb9f0b989c29b0a735552ce9d85b0595e37df86322bd3619e",
     "execute_bits": 73
+  },
+  "docs/images/hardware_installation.jpeg": {
+    "type": "file",
+    "size": 2565943,
+    "sha256": "e0d5f5653d840f3bc537d1805b387ab2b9a3025b73f937545c23198d6e023656",
+    "execute_bits": 0
+  },
+  "docs/images/vr_scale_setting.png": {
+    "type": "file",
+    "size": 134449,
+    "sha256": "477911d19f4b24dacf7a11d47e8ccae8ca99d483592eaeae75e627bd6b41c05a",
+    "execute_bits": 0
+  },
+  "docs/images/xrobotoolkit_connection.png": {
+    "type": "file",
+    "size": 136612,
+    "sha256": "031aa83784004668e546f5cedb6c6ef0f5ad0d6d817561ffb5b68feb7645eb1f",
+    "execute_bits": 0
   },
   "orin/pico_bridge/run_vr_bridge.sh": {
     "type": "file",
