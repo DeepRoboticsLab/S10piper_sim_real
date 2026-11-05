@@ -115,7 +115,7 @@ cd /home/user/rl_deploy  # 进入传到 103 的控制程序目录
 
 ### 在 Orin 启动机械臂服务
 
-Orin 需准备好 Python 3.10、numpy、Piper SDK（本包按 `piper_sdk==0.6.1` 对接）、CAN 工具和正确的 CAN 配置。SDK 安装及依赖按松灵官方指引准备，本包不附带 Piper SDK 源码。
+在读者自己的 Orin 上准备 Python 3.10、numpy、Piper SDK（本包按 `piper_sdk==0.6.1` 对接）、CAN 工具和正确的 CAN 配置。Piper SDK 请从[松灵机器人官方 Piper SDK 仓库](https://github.com/agilexrobotics/piper_sdk)获取，并按官方说明安装依赖、核对机械臂固件与接口版本；本包不附带 Piper SDK 源码。
 
 ```bash
 cd /home/user/piper  # 进入 Orin 上的机械臂服务目录

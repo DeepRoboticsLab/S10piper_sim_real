@@ -115,7 +115,7 @@ The build outputs are stored in `install_drdds`, `install`, and `install_vr`. Th
 
 ### Start the arm service on Orin
 
-Orin requires Python 3.10, NumPy, Piper SDK (this package targets `piper_sdk==0.6.1`), CAN utilities, and a valid CAN configuration. Install the SDK and dependencies using the AgileX official instructions. The Piper SDK source is not bundled in this repository.
+On your own Orin, prepare Python 3.10, NumPy, Piper SDK (this package targets `piper_sdk==0.6.1`), CAN utilities, and a valid CAN configuration. Obtain Piper SDK from the [official AgileX Robotics Piper SDK repository](https://github.com/agilexrobotics/piper_sdk), follow its installation instructions, and confirm that the arm firmware and SDK interface version are compatible. The Piper SDK source is not bundled in this repository.
 
 ```bash
 cd /home/user/piper  # Enter the arm-service directory on Orin
