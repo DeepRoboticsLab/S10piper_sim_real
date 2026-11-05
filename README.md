@@ -222,9 +222,7 @@ DEFAULT_ARM_SCALE = 1.5  # 手移动 10cm，机械臂目标约移动 15cm
 
 ## 说明
 
-腿 Kp/Kd 为 60/1，轮为 0/0.4。模型和控制保护未修改，仿真通过不代表实物长期稳定。
 
-目录组织参考 [Lite3_rl_deploy](https://github.com/DeepRoboticsLab/Lite3_rl_deploy)。`103/rl_deploy/vendor/drdds` 来自 DEEPRobotics 官方 `deep-robotics-msg`，保留其 BSD-3-Clause 许可证。模型、网格及其他第三方依赖的再分发许可需分别确认；不要公开设备密码、密钥或授权。来源与测试边界见 [verification/ORIGIN.md](verification/ORIGIN.md)。
 
 ## 项目结构
 
