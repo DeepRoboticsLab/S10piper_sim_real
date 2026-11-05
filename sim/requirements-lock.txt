@@ -1,0 +1,12 @@
+# Runtime snapshot for Linux x86_64 / Python 3.10.20.
+# Install into a NEW environment. This is a version lock, not a wheel/hash lock.
+absl-py==2.5.0
+etils==1.13.0
+fsspec==2026.7.0
+glfw==2.10.2
+importlib_resources==7.1.0
+mujoco==3.11.0
+numpy==1.26.4
+PyOpenGL==3.1.10
+typing_extensions==4.16.0
+zipp==4.1.0

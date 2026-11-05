@@ -1,0 +1,51 @@
+/**
+ * @file joint_damping_state.hpp
+ * @brief joint passive control state
+ * @author mazunwang
+ * @version 1.0
+ * @date 2022-05-29
+ * 
+ * @copyright Copyright (c) 2022  DeepRobotics
+ * 
+ */
+#pragma once
+
+#include "state_base.h"
+
+
+class JointDampingState : public StateBase{
+private:
+    float time_record_, run_time_;
+    MatXf joint_cmd_;
+public:
+    JointDampingState(const RobotType& robot_type, const std::string& state_name, 
+        std::shared_ptr<ControllerData> data_ptr):StateBase(robot_type, state_name, data_ptr){
+            VecXf kd_ = cp_ptr_->swing_leg_kd_.replicate(4, 1);
+            joint_cmd_ = MatXf::Zero(22, 5); // <--- 改为 22
+            joint_cmd_.block(0, 2, 16, 1) = kd_; // 赋给腿和轮子
+            joint_cmd_.block(16, 2, 6, 1).setConstant(1.0); // 赋给机械臂一定的阻尼保护
+        }
+    ~JointDampingState(){}
+
+    virtual void OnEnter() {
+        time_record_ = ri_ptr_->GetInterfaceTimeStamp();
+        run_time_ = ri_ptr_->GetInterfaceTimeStamp();
+    };
+    virtual void OnExit() {
+
+    }
+    virtual void Run() {
+        run_time_ = ri_ptr_->GetInterfaceTimeStamp();
+        ri_ptr_->SetJointCommand(joint_cmd_); // (current torque, not last torque, video content slip of the tongue)
+    }
+    virtual bool LoseControlJudge() {
+        return false;
+    }
+    virtual StateName GetNextStateName() {
+        if(run_time_ - time_record_ < 3.){
+            return StateName::kJointDamping;
+        }
+        return StateName::kIdle;
+    }
+};
+
