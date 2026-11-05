@@ -3299,14 +3299,14 @@
   },
   "README.md": {
     "type": "file",
-    "size": 13460,
-    "sha256": "7199adda23cdeb1bf9206dbd9c2d005ce54be483eca7d3e7d6445bd4f5e91f91",
+    "size": 12704,
+    "sha256": "5a9b2f22da9779ceda09dfefcadd411d2f64d78d225186df00140712bafe853e",
     "execute_bits": 0
   },
   "README_EN.md": {
     "type": "file",
-    "size": 16108,
-    "sha256": "dd3d95f935dc34b1d4a3f6ab5a53ac86e8500f435841facd26ca4724b5f18b74",
+    "size": 15184,
+    "sha256": "028a9401af6ab2435708490001f1c8da25845c464949c1b1a39b5a3c8abd3e8f",
     "execute_bits": 0
   },
   "build.sh": {
@@ -3317,8 +3317,8 @@
   },
   "docs/images/hardware_installation.png": {
     "type": "file",
-    "size": 2943710,
-    "sha256": "c968d65f7e31a74f04e7d2f2253ee97a474d96546a553349bf308e8f562c3313",
+    "size": 17047514,
+    "sha256": "974b56fc2ad0d9ea9360e275894c20db529a2ef8377b36cacd2568db67cb9851",
     "execute_bits": 0
   },
   "docs/images/s10_piper_demo_1_2x.gif": {

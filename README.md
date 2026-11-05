@@ -67,11 +67,11 @@ cd "$HOME/S10piper_sim_real/sim"  # 进入仿真目录
 
 先固定好 Piper、Orin 和线束。实物部署前，按厂家文档准备好 S10 的 SDK、通信环境及控制权限，并在 Orin 上安装 Piper SDK 和相关依赖。
 
-讲稿中的样机，侧面三个航插从左到右为两路集成网口的 24V 接口和一路 72V 接口；Piper 使用 24V 供电，Orin 经 72V 转 19V 稳压模块供电。** 测试时确保机器狗安全支撑、机械臂完整路径无人、急停可用。
+讲稿中的样机，侧面三个航插从左到右为两路集成网口的 24V 接口和一路 72V 接口；Piper 使用 24V 供电，Orin 经 72V 转 19V 稳压模块供电。测试时确保机器狗安全支撑、机械臂完整路径无人、急停可用。
 
 ![S10 的两路 24V 加网口航插与一路 72V 电源航插](docs/images/hardware_installation.png)
 
-*图 1　样机的两路 24V 加网口航插与一路 72V 电源航插；读者必须以自己设备的接口定义为准。*
+*图 1　样机的两路 24V 加网口航插与一路 72V 电源航插；用户必须以自己设备的接口定义为准。*
 
 本说明采用讲稿中的 Wi-Fi 方案：电脑与 Orin 都连接机器狗热点；103 运行策略，Orin 控制机械臂。Piper 与 Orin 通过 USB-CAN / SocketCAN 通信。
 
@@ -88,7 +88,7 @@ sudo nmcli radio wifi on  # 开启 Wi-Fi
 sudo nmcli --ask device wifi connect "你的机器狗热点名称"  # 连接热点，按提示输入密码
 ```
 
-下文使用样机地址：103 为 `10.21.33.103`，Orin 为 `10.21.41.12`。**其中 `10.21.41.12` 是作者当前样机的 Orin IP，不是通用地址；读者必须替换为自己 Orin 在机器狗网络中的实际 IP，包括下面所有 SSH、SCP、XRoboToolkit 和配置文件中的地址。** 使用默认 SSH 22 端口，按提示输入各自设备的账号密码，不要求预先配置密钥。首次连接核对设备指纹；换设备先修改文末列出的地址配置。
+下文使用样机地址：103 为 `10.21.33.103`，Orin 为 `10.21.41.12`。**其中 `10.21.41.12` 是作者当前样机的 Orin IP，不是通用地址；用户必须替换为自己 Orin 在机器狗网络中的实际 IP，包括下面所有 SSH、SCP、XRoboToolkit 和配置文件中的地址。** 使用默认 SSH 22 端口，按提示输入各自设备的账号密码，不要求预先配置密钥。首次连接核对设备指纹；换设备先修改文末列出的地址配置。
 
 ### 传文件到 103 和 Orin
 
@@ -125,7 +125,7 @@ cd /home/user/rl_deploy  # 进入传到 103 的控制程序目录
 
 ### 在 Orin 启动机械臂服务
 
-在读者自己的 Orin 上准备 Python 3.10、numpy、Piper SDK（本包按 `piper_sdk==0.6.1` 对接）、CAN 工具和正确的 CAN 配置。Piper SDK 请从[松灵机器人官方 Piper SDK 仓库](https://github.com/agilexrobotics/piper_sdk)获取，并按官方说明安装依赖、核对机械臂固件与接口版本；本包不附带 Piper SDK 源码。
+在用户自己的 Orin 上准备 Python 3.10、numpy、Piper SDK（本包按 `piper_sdk==0.6.1` 对接）、CAN 工具和正确的 CAN 配置。Piper SDK 请从[松灵机器人官方 Piper SDK 仓库](https://github.com/agilexrobotics/piper_sdk)获取，并按官方说明安装依赖、核对机械臂固件与接口版本；本包不附带 Piper SDK 源码。
 
 ```bash
 cd /home/user/piper  # 进入 Orin 上的机械臂服务目录
@@ -166,11 +166,11 @@ cd /home/user/pico_bridge  # 进入 VR 桥接目录
 ./run_vr_bridge.sh  # 接收手柄数据并发送到 103，默认倍率 1.5
 ```
 
-Pico 连接机器狗 Wi-Fi，打开 XRoboToolkit，连接读者自己 Orin 的实际 IP（图中作者样机为 `10.21.41.12`）。确认 Network 显示绿色 `WORKING`，勾选 `Controller` 和 `Send`；Orin 收到手柄位置数据后，在 103 启动 VR 版：
+Pico 连接机器狗 Wi-Fi，打开 XRoboToolkit，连接用户自己 Orin 的实际 IP（图中作者样机为 `10.21.41.12`）。确认 Network 显示绿色 `WORKING`，勾选 `Controller` 和 `Send`；Orin 收到手柄位置数据后，在 103 启动 VR 版：
 
 ![XRoboToolkit 连接 Orin 并发送 Pico 手柄数据](docs/images/xrobotoolkit_connection.png)
 
-*图 2　XRoboToolkit 的连接状态示例；PC Service 地址应改为读者自己的 Orin IP。*
+*图 2　XRoboToolkit 的连接状态示例；PC Service 地址应改为用户自己的 Orin IP。*
 
 ```bash
 cd /home/user/rl_deploy  # 进入 103 控制程序目录
@@ -219,10 +219,6 @@ DEFAULT_ARM_SCALE = 1.5  # 手移动 10cm，机械臂目标约移动 15cm
 | `orin/pico_bridge/vr_axes.json` | 手柄方向校准 |
 
 样机 `10.21.33.103` 与 `10.21.41.1` 是 103 的不同网段地址，均须以实际设备网络为准。以上为 Wi-Fi 示例，代码通过 IP 通信，不强制网卡类型；换为有线连接时，同样需配置两端可达的地址。
-
-## 说明
-
-
 
 ## 项目结构
 

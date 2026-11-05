@@ -6,7 +6,7 @@ English | [简体中文](README.md)
   <img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 and Piper coordinated simulation demo" width="640">
 </p>
 
-<p align="center">S10 and Piper coordinated-control demo </p>
+<p align="center">S10 and Piper coordinated-control demo</p>
 
 Mount a Piper robotic arm on an S10 quadruped and run a coordinated whole-body policy. This repository includes PC simulation, deployment on the S10 controller (referred to as **103** below), and Pico VR control. Start with simulation to learn the controls, then use the same controls on the real robot.
 
@@ -67,11 +67,11 @@ Simulation uses local loopback communication only and does not connect to the re
 
 Secure the Piper arm, Orin, and all cables before deployment. Follow the manufacturers' documentation to prepare the S10 SDK, communication environment, and control permission. Install the Piper SDK and its dependencies on Orin.
 
-On the reference robot, the three side aviation connectors are two integrated Ethernet/24 V connectors and one 72 V connector. Piper uses 24 V power, while Orin is powered through a 72 V-to-19 V regulator. Keep the robot safely supported, clear the full arm workspace, and keep the hardware emergency stop accessible.
+On the reference robot, the three side aviation connectors are two integrated Ethernet/24 V connectors and one 72 V connector. Piper uses 24 V power, while Orin is powered through a 72 V-to-19 V regulator. Keep the robot safely supported, clear the full arm workspace, and keep the hardware emergency stop accessible during testing.
 
 ![Two 24 V plus network aviation connectors and one 72 V power aviation connector on the reference S10](docs/images/hardware_installation.png)
 
-*Figure 1. Two 24 V plus network connectors and one 72 V power connector on the reference robot. Follow the pinout of your own hardware.*
+*Figure 1. Two 24 V plus network connectors and one 72 V power connector on the reference robot. Users must follow the pinout of their own hardware.*
 
 This guide uses the Wi-Fi arrangement from the demonstration: the PC and Orin connect to the robot hotspot, 103 runs the policy, and Orin controls Piper. Piper communicates with Orin through USB-CAN / SocketCAN.
 
@@ -219,9 +219,6 @@ Normal operation uses the short launch commands shown above. Do not add manual `
 | `orin/pico_bridge/vr_axes.json` | Controller-axis calibration. |
 
 `10.21.33.103` and `10.21.41.1` are addresses of the same 103 controller on different subnets on the reference robot. Always use addresses that match the actual robot network. The examples use Wi-Fi, but the software communicates by IP and does not require a specific network-interface type; a wired setup only needs mutually reachable addresses.
-
-## Notes
-
 
 ## Project Structure
 
