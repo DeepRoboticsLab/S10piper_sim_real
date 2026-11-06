@@ -49,6 +49,14 @@ private:
     static constexpr float kHomeY = 0.0f;
     static constexpr float kHomeZ = 0.05f;
     static constexpr float kGripperMaxM = 0.080f;
+    // VR base safety: keep the existing +/-0.8 maximum speed, but prevent an
+    // instantaneous forward/reverse command.  Braking is intentionally faster
+    // than acceleration; a sign change must reach zero before accelerating in
+    // the opposite direction.
+    static constexpr float kForwardAccelPerSecond = 0.8f;
+    static constexpr float kForwardDecelPerSecond = 1.6f;
+    static constexpr float kNominalVrPacketSeconds = 0.01f;
+    static constexpr float kMaxVrPacketSeconds = 0.05f;
     static constexpr int32_t kVrHomeRequest = -1001;
     static constexpr auto kVrTimeout = std::chrono::milliseconds(300);
 
@@ -65,6 +73,7 @@ private:
     bool vr_home_active_ = false;
     std::chrono::steady_clock::time_point home_until_{};
     std::chrono::steady_clock::time_point last_packet_{};
+    std::chrono::steady_clock::time_point last_forward_update_{};
 
     static int EnvPort() {
         const char* value = std::getenv("S10_PIPER_VR_PORT");
@@ -102,12 +111,45 @@ private:
         usr_cmd_.forward_vel_scale = 0.0f;
         usr_cmd_.side_vel_scale = 0.0f;
         usr_cmd_.turnning_vel_scale = 0.0f;
+        last_forward_update_ = {};
+    }
+
+    float LimitForwardVelocityLocked(
+        float requested, std::chrono::steady_clock::time_point now) {
+        requested = std::clamp(requested, -0.8f, 0.8f);
+        float current = std::clamp(usr_cmd_.forward_vel_scale, -0.8f, 0.8f);
+
+        float dt = kNominalVrPacketSeconds;
+        if (last_forward_update_.time_since_epoch().count() != 0) {
+            dt = std::chrono::duration<float>(now - last_forward_update_).count();
+            dt = std::clamp(dt, 0.0f, kMaxVrPacketSeconds);
+        }
+        last_forward_update_ = now;
+
+        // Do not cross zero in one update.  A requested reversal first becomes
+        // a braking request to exactly zero; only a later packet may accelerate
+        // in the opposite direction.
+        const bool reversing = current * requested < 0.0f;
+        const float target = reversing ? 0.0f : requested;
+        const bool braking = std::abs(target) < std::abs(current);
+        const float rate = braking ? kForwardDecelPerSecond
+                                   : kForwardAccelPerSecond;
+        const float max_step = rate * dt;
+        const float delta = std::clamp(target - current, -max_step, max_step);
+        float limited = current + delta;
+        if ((target - current > 0.0f && limited > target) ||
+            (target - current < 0.0f && limited < target)) {
+            limited = target;
+        }
+        if (std::abs(limited) < 1.0e-6f) limited = 0.0f;
+        return limited;
     }
 
     void ApplyPacket(const VRCommandPacket& packet) {
         std::lock_guard<std::mutex> lock(command_mutex_);
         vr_online_ = true;
-        last_packet_ = std::chrono::steady_clock::now();
+        const auto now = std::chrono::steady_clock::now();
+        last_packet_ = now;
 
         // S10/Piper operator workspace: Y +/-0.50 m, synchronized with Orin.
         const auto safe = piper_safe_workspace::Clamp(
@@ -119,7 +161,8 @@ private:
             DecodeGripperMetres(packet.gripper) >= 0.04f ? 1 : 2;
 
         if (vr_base_enabled_) {
-            usr_cmd_.forward_vel_scale = std::clamp(packet.vx, -0.8f, 0.8f);
+            usr_cmd_.forward_vel_scale =
+                LimitForwardVelocityLocked(packet.vx, now);
             usr_cmd_.side_vel_scale = 0.0f;
             usr_cmd_.turnning_vel_scale = std::clamp(packet.wz, -1.0f, 1.0f);
         }
@@ -351,6 +394,13 @@ public:
                   << (vr_base_enabled_ ? "; VR base ENABLED" :
                       "; base remains keyboard W/S/Q/E")
                   << std::endl;
+        if (vr_base_enabled_) {
+            std::cout << "[VR] base X slew limit: accel "
+                      << kForwardAccelPerSecond << "/s, decel "
+                      << kForwardDecelPerSecond
+                      << "/s; reversal must pass through zero"
+                      << std::endl;
+        }
         std::cout << "[VR] keyboard: Z stand, C RL, R damping, H Home, "
                      "N/M gripper, SPACE base stop"
                   << std::endl;
@@ -358,8 +408,14 @@ public:
 
     void Stop() override {
         running_ = false;
-        if (client_fd_ >= 0) {
-            ::shutdown(client_fd_, SHUT_RDWR);
+        const int client = client_fd_.load();
+        if (client >= 0) {
+            // Tell the Orin bridge that this 103 strategy session has ended.
+            // The following shutdown also lets the bridge detect an EOF if
+            // this best-effort byte cannot be sent.
+            const char reset_session = 'R';
+            ::send(client, &reset_session, 1, MSG_DONTWAIT | MSG_NOSIGNAL);
+            ::shutdown(client, SHUT_RDWR);
         }
         if (socket_fd_ >= 0) {
             ::shutdown(socket_fd_, SHUT_RDWR);
@@ -383,4 +439,3 @@ public:
 };
 
 }  // namespace interface
-

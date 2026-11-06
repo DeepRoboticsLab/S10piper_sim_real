@@ -189,14 +189,14 @@ cd /home/user/rl_deploy  # 进入 103 控制程序目录
 | 按下 / 松开右 Trigger | 打开 / 闭合夹爪，默认闭合 |
 | 右 B | 回训练初始姿态、清零底盘指令，并将当前手柄位置设为新的位置原点；不改变方向校准 |
 
-左右运动与前后、上下采用分组控制。VR 数据超过 300ms 未更新时，停止底盘指令并冻结机械臂目标，但这不是硬件急停。结束时仍先在 103 终端按 `Ctrl+C`，等待退出完成后再关闭 Orin 服务。
+左右运动与前后、上下采用分组控制。VR 数据超过 300ms 未更新时，停止底盘指令并冻结机械臂目标，但这不是硬件急停。结束时先在 103 终端按 `Ctrl+C`；103 退出会通知 Orin 桥接清空旧的机械臂目标和手柄原点，再关闭 Orin 服务。
 
 ### 倍率和坐标映射在哪改
 
 修改 Orin 上 `/home/user/pico_bridge/s10_piper_vr_bridge.py` 文件开头：
 
 ```python
-DEFAULT_ARM_SCALE = 1.5  # 手移动 10cm，机械臂目标约移动 15cm
+DEFAULT_ARM_SCALE = 1.0  # 手移动 10cm，机械臂目标约移动 10cm
 ```
 
 ![VR 位移倍率代码位置](docs/images/vr_scale_setting.png)

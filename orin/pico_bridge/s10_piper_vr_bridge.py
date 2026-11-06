@@ -8,6 +8,7 @@ available. Only a fixed binary command is relayed to the VR frontend on host
 
 import argparse
 import ctypes
+import errno
 import json
 import math
 import os
@@ -25,11 +26,13 @@ PACKET = struct.Struct("<7fi")
 ARM_HOME = (0.42, 0.0, 0.05)
 # Normal startup: ./run_vr_bridge.sh (no extra command-line arguments).
 DEFAULT_ROBOT_IP = "10.21.41.1"
-DEFAULT_ARM_SCALE = 1.5
+DEFAULT_ARM_SCALE = 1.0
+DEFAULT_ARM_MAX_SPEED_M_S = 0.30
 DEFAULT_VR_BASE = True
 DEFAULT_RATE_HZ = 100.0
 GRIP_THRESHOLD = 0.5
 MAX_VR_STEP_M = 0.10
+MAX_ARM_SLEW_DT_S = 0.05
 INPUT_TIMEOUT_S = 0.30
 
 PXREA_SERVER_CONNECT = 1 << 2
@@ -238,6 +241,14 @@ class VrArmInput:
         self.grip_engaged = False
         self.clutch.reset()
 
+    def reset_session(self):
+        """Discard all targets and controller anchors from the last 103 run."""
+        self.input_lost()
+        self.arm_target = ARM_HOME
+        self.frame_origin = None
+        self.home_button_last = False
+        self.event = None
+
     def update(self, right, sequence):
         position = tuple(right["pose"][:3])
         if not finite_vector(position, 3):
@@ -291,6 +302,21 @@ def add_scaled_clamped(anchor, robot_delta, scale):
     return tuple(max(bounds[index][0], min(bounds[index][1],
         float(anchor[index]) + float(robot_delta[index]) * scale))
         for index in range(3))
+
+
+def move_towards_vector(current, target, max_distance):
+    """Move a Cartesian command toward its target without a position jump."""
+    if not finite_vector(current, 3) or not finite_vector(target, 3):
+        raise ValueError("Cartesian slew endpoints must be finite 3-vectors")
+    if not math.isfinite(max_distance) or max_distance < 0.0:
+        raise ValueError("Cartesian slew distance must be finite and non-negative")
+    current = tuple(float(value) for value in current)
+    target = tuple(float(value) for value in target)
+    distance = math.dist(current, target)
+    if distance <= max_distance or distance < 1.0e-12:
+        return target
+    ratio = max_distance / distance
+    return tuple(a + (b - a) * ratio for a, b in zip(current, target))
 
 
 def gripper_opening_from_trigger(trigger):
@@ -353,6 +379,14 @@ class PicoState:
     def snapshot(self):
         with self._lock:
             return self._right, self._left, self._updated_at, self._sequence
+
+    def clear_commands(self):
+        """Require a fresh Pico callback before controlling a new 103 run."""
+        with self._lock:
+            self._right = None
+            self._left = None
+            self._updated_at = 0.0
+            self._sequence += 1
 
 
 def default_sdk_candidates():
@@ -432,6 +466,17 @@ def connect_robot(destination):
     return connection
 
 
+def strategy_session_ended(connection):
+    """Detect the 103 shutdown byte or TCP EOF without delaying VR frames."""
+    try:
+        marker = connection.recv(1, socket.MSG_PEEK | socket.MSG_DONTWAIT)
+    except (BlockingIOError, InterruptedError, socket.timeout):
+        return False
+    except OSError:
+        return True
+    return marker in (b"", b"R")
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="PXREA Pico to S10 S10/Piper/Piper whole-body-policy bridge"
@@ -445,7 +490,11 @@ def parse_args():
     parser.add_argument("--rate", type=float, default=DEFAULT_RATE_HZ)
     parser.add_argument(
         "--scale", type=float, default=DEFAULT_ARM_SCALE,
-        help="Piper target metres per controller metre (default: 1.5)",
+        help="Piper target metres per controller metre (default: 1.0)",
+    )
+    parser.add_argument(
+        "--arm-max-speed", type=float, default=DEFAULT_ARM_MAX_SPEED_M_S,
+        help="maximum Cartesian command slew speed in m/s (default: 0.30)",
     )
     parser.add_argument("--sdk-lib", help="path to libPXREARobotSDK.so")
     parser.add_argument(
@@ -537,14 +586,20 @@ def self_test():
     assert add_scaled_clamped(ARM_HOME, (1.0, -1.0, 1.0), 1.0) == (
         0.58, -0.50, 0.42
     )
+    assert move_towards_vector((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 0.1) == (
+        0.0, 0.0, 0.0
+    )
+    slewed = move_towards_vector((0.0, 0.0, 0.0), (0.3, 0.4, 0.0), 0.1)
+    assert all(abs(a - b) < 1.0e-12 for a, b in zip(slewed, (0.06, 0.08, 0.0)))
+    assert move_towards_vector(slewed, (0.3, 0.4, 0.0), 1.0) == (0.3, 0.4, 0.0)
     mapped = add_scaled_clamped(
         ARM_HOME, vr_delta_to_robot((0.01, -0.02, 0.03)), 1.0
     )
     assert all(abs(a - b) < 1.0e-9 for a, b in zip(mapped, (0.39, -0.01, 0.03)))
-    # Forward is negative Pico Z: at 1.5x, 10 cm forward adds 15 cm robot X.
-    for hand_z, expected_x in ((-0.1, 0.57), (0.1, 0.27)):
+    # Forward is negative Pico Z: at 1.0x, 10 cm forward adds 10 cm robot X.
+    for hand_z, expected_x in ((-0.1, 0.52), (0.1, 0.32)):
         target = add_scaled_clamped(
-            ARM_HOME, vr_delta_to_robot((0.0, 0.0, hand_z)), 1.5)
+            ARM_HOME, vr_delta_to_robot((0.0, 0.0, hand_z)), DEFAULT_ARM_SCALE)
         assert abs(target[0] - expected_x) < 1.0e-9
         assert target[1:] == ARM_HOME[1:]
     sample = {
@@ -562,6 +617,27 @@ def self_test():
     right, _left, updated_at, sequence = state.snapshot()
     assert right["pose"][:3] == (1.0, 2.0, 3.0)
     assert updated_at > 0.0 and sequence == 1
+    state.clear_commands()
+    assert state.snapshot()[0:3] == (None, None, 0.0)
+    arm_input = VrArmInput((1.0, 0.0), DEFAULT_ARM_SCALE)
+    arm_input.arm_target = (0.55, 0.1, 0.1)
+    arm_input.frame_origin = (1.0, 2.0, 3.0)
+    arm_input.reset_session()
+    assert arm_input.arm_target == ARM_HOME and arm_input.frame_origin is None
+    bridge_socket, robot_socket = socket.socketpair()
+    try:
+        assert not strategy_session_ended(bridge_socket)
+        robot_socket.sendall(b"R")
+        assert strategy_session_ended(bridge_socket)
+    finally:
+        bridge_socket.close()
+        robot_socket.close()
+    bridge_socket, robot_socket = socket.socketpair()
+    robot_socket.close()
+    try:
+        assert strategy_session_ended(bridge_socket)
+    finally:
+        bridge_socket.close()
     assert len(PACKET.pack(0.0, 0.0, 0.0, *ARM_HOME, 0.08, 0)) == 32
     clutch = SideLockedClutch((1.0, 0.0), 1.5)
     clutch.begin((0.0, 0.0, 0.0), ARM_HOME)
@@ -577,6 +653,8 @@ def run(args):
         raise SystemExit("--rate must be in [1, 200] Hz")
     if not (0.1 <= args.scale <= 4.0):
         raise SystemExit("--scale must be in [0.1, 4.0]")
+    if not (0.01 <= args.arm_max_speed <= 1.0):
+        raise SystemExit("--arm-max-speed must be in [0.01, 1.0] m/s")
 
     try:
         right_axis = load_right_axis(args.calibration_file)
@@ -602,9 +680,28 @@ def run(args):
     connection = None
     last_connect_attempt = 0.0
     arm_target = ARM_HOME
+    commanded_arm_target = ARM_HOME
+    last_arm_command_time = None
+    home_return_pending = False
     stale_reported = False
+
+    def clear_strategy_session(reason):
+        nonlocal connection, arm_target, commanded_arm_target
+        nonlocal last_arm_command_time, home_return_pending
+        if connection is not None:
+            connection.close()
+            connection = None
+        arm_input.reset_session()
+        pico_state.clear_commands()
+        arm_target = commanded_arm_target = ARM_HOME
+        last_arm_command_time = None
+        home_return_pending = False
+        print(f"\n[PXREA Bridge] 103 {reason}; cleared VR arm/base targets and controller anchors")
+
     print(f"[PXREA Bridge] SDK={sdk_path}")
     print(f"[PXREA Bridge] arm displacement scale={args.scale:g}x")
+    print(f"[PXREA Bridge] Cartesian target slew limit={args.arm_max_speed:g} m/s "
+          f"({1000.0 * args.arm_max_speed / args.rate:g} mm/nominal frame)")
     print("[PXREA Bridge] no webpage; waiting for Pico controller callbacks")
     print("[PXREA Bridge] right Grip=clutch; right Trigger: press=OPEN, release/default=CLOSED")
     print("[PXREA Bridge] right B: Home + 本帧手柄位置设为新原点；按住B保持Home并停底盘，方向校准不变")
@@ -617,11 +714,16 @@ def run(args):
     try:
         while not stop_requested.is_set():
             next_tick += period
+            if connection is not None and strategy_session_ended(connection):
+                clear_strategy_session("strategy session ended")
+                time.sleep(max(0.0, next_tick - time.monotonic()))
+                continue
             right, left, updated_at, sequence = pico_state.snapshot()
             now = time.monotonic()
             fresh = right is not None and now - updated_at <= INPUT_TIMEOUT_S
             if not fresh:
                 arm_input.input_lost()
+                last_arm_command_time = None
                 if connection is not None:
                     connection.close()
                     connection = None
@@ -632,11 +734,26 @@ def run(args):
                 continue
             stale_reported = False
 
+            if connection is None and now - last_connect_attempt >= 1.0:
+                last_connect_attempt = now
+                try:
+                    connection = connect_robot(destination)
+                    last_arm_command_time = None
+                except OSError as error:
+                    print(f"\n[PXREA Bridge] waiting for 103: {error}")
+            if connection is None:
+                # Motion while 103 is offline must not accumulate into the
+                # first target sent when the next strategy run connects.
+                arm_input.input_lost()
+                time.sleep(max(0.0, next_tick - time.monotonic()))
+                continue
+
             grip = right["grip"] > GRIP_THRESHOLD
             arm_target, home_requested = arm_input.update(right, sequence)
             if arm_input.event == "HOME_RECENTER":
+                home_return_pending = True
                 print(f"\n[PXREA Bridge] B: Home + 新位置原点={arm_input.frame_origin}; "
-                      "清除旧位移/侧移模式，按住B保持Home")
+                      "清除旧位移/侧移模式，渐进回Home")
             elif arm_input.event == "GRIP":
                 print("\n[PXREA Bridge] right Grip engaged; Cartesian clutch anchored")
             elif arm_input.event == "MODE":
@@ -652,30 +769,45 @@ def run(args):
                 vx, wz = base_command_from_left(left)
             gripper_opening_m = gripper_opening_from_trigger(right["trigger"])
 
-            if connection is None and now - last_connect_attempt >= 1.0:
-                last_connect_attempt = now
-                try:
-                    connection = connect_robot(destination)
-                except OSError as error:
-                    print(f"\n[PXREA Bridge] waiting for 103: {error}")
-
             if connection is not None:
+                command_dt = (period if last_arm_command_time is None else
+                              min(MAX_ARM_SLEW_DT_S,
+                                  max(0.0, now - last_arm_command_time)))
+                home_in_progress = home_requested or home_return_pending
+                slew_destination = ARM_HOME if home_in_progress else arm_target
+                commanded_arm_target = move_towards_vector(
+                    commanded_arm_target, slew_destination,
+                    args.arm_max_speed * command_dt)
+                last_arm_command_time = now
+                home_reached = math.dist(commanded_arm_target, ARM_HOME) < 1.0e-6
+                home_wire_request = home_in_progress and home_reached
                 try:
                     connection.sendall(PACKET.pack(
-                        0.0 if home_requested else vx, 0.0,
-                        0.0 if home_requested else wz, *arm_target,
-                        gripper_opening_m, -1001 if home_requested else 0
+                        0.0 if home_in_progress else vx, 0.0,
+                        0.0 if home_in_progress else wz, *commanded_arm_target,
+                        gripper_opening_m, -1001 if home_wire_request else 0
                     ))
+                    if home_wire_request and not home_requested:
+                        home_return_pending = False
                 except OSError as error:
                     print(f"\n[PXREA Bridge] send failed: {error}")
-                    connection.close()
-                    connection = None
+                    if error.errno in (errno.EAGAIN, errno.EWOULDBLOCK,
+                                       errno.ETIMEDOUT):
+                        connection.close()
+                        connection = None
+                        last_arm_command_time = None
+                    else:
+                        clear_strategy_session("connection lost")
+            else:
+                # Do not consume a large Cartesian jump while 103 is offline.
+                last_arm_command_time = None
 
             sys.stdout.write(
                 f"\r[Pico] grip={'ON ' if grip else 'OFF'} "
                 f"mode={clutch.mode} "
-                f"XYZ=({arm_target[0]:+.3f},{arm_target[1]:+.3f},"
-                f"{arm_target[2]:+.3f}) gripper="
+                f"XYZcmd=({commanded_arm_target[0]:+.3f},"
+                f"{commanded_arm_target[1]:+.3f},"
+                f"{commanded_arm_target[2]:+.3f}) gripper="
                 f"{'close' if gripper_opening_m == 0.0 else 'open '}  "
             )
             sys.stdout.flush()
@@ -704,4 +836,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -61,8 +61,8 @@
   },
   "103/rl_deploy/interface/user_command/vr_command_interface.hpp": {
     "type": "file",
-    "size": 14950,
-    "sha256": "94d90c45b221e3387f21014d25f561c8638d34dcf70d0871c9eadf72d5b69d7c",
+    "size": 17740,
+    "sha256": "3d2e6bf5429bac71015468390bfbdce36c4d1fcbf14841fd5395a7484caab7f7",
     "execute_bits": 0
   },
   "103/rl_deploy/main.cpp": {
@@ -3299,14 +3299,14 @@
   },
   "README.md": {
     "type": "file",
-    "size": 12704,
-    "sha256": "5a9b2f22da9779ceda09dfefcadd411d2f64d78d225186df00140712bafe853e",
+    "size": 12756,
+    "sha256": "bfea02f3bafa7fed39fdf17d6dd1e37067eef40f2b719e4fa96b047fbf8df94c",
     "execute_bits": 0
   },
   "README_EN.md": {
     "type": "file",
-    "size": 15184,
-    "sha256": "028a9401af6ab2435708490001f1c8da25845c464949c1b1a39b5a3c8abd3e8f",
+    "size": 15245,
+    "sha256": "327e256c1c7b8be57ab8b67aab295ba7eb0cdfd8418556b532a0e81c1a825d7f",
     "execute_bits": 0
   },
   "build.sh": {
@@ -3329,8 +3329,8 @@
   },
   "docs/images/vr_scale_setting.png": {
     "type": "file",
-    "size": 134449,
-    "sha256": "477911d19f4b24dacf7a11d47e8ccae8ca99d483592eaeae75e627bd6b41c05a",
+    "size": 28900,
+    "sha256": "a646497fa7d95648cd5d37ef657d2fbea7ba7db6436c9429b90fb2c15cd1751c",
     "execute_bits": 0
   },
   "docs/images/xrobotoolkit_connection.png": {
@@ -3347,8 +3347,8 @@
   },
   "orin/pico_bridge/s10_piper_vr_bridge.py": {
     "type": "file",
-    "size": 29110,
-    "sha256": "586c13ac4c99a1a760628d5e3b2863e4375d468b8bde4f6bb3d0bf6c74f19190",
+    "size": 35120,
+    "sha256": "52b3acc8ed6ba597609128b644ec6c9397da80b988d41043a20a59106696bef5",
     "execute_bits": 0
   },
   "orin/pico_bridge/vr_axes.json": {
