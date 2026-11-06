@@ -408,14 +408,8 @@ public:
 
     void Stop() override {
         running_ = false;
-        const int client = client_fd_.load();
-        if (client >= 0) {
-            // Tell the Orin bridge that this 103 strategy session has ended.
-            // The following shutdown also lets the bridge detect an EOF if
-            // this best-effort byte cannot be sent.
-            const char reset_session = 'R';
-            ::send(client, &reset_session, 1, MSG_DONTWAIT | MSG_NOSIGNAL);
-            ::shutdown(client, SHUT_RDWR);
+        if (client_fd_ >= 0) {
+            ::shutdown(client_fd_, SHUT_RDWR);
         }
         if (socket_fd_ >= 0) {
             ::shutdown(socket_fd_, SHUT_RDWR);

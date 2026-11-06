@@ -8,7 +8,6 @@ available. Only a fixed binary command is relayed to the VR frontend on host
 
 import argparse
 import ctypes
-import errno
 import json
 import math
 import os
@@ -241,14 +240,6 @@ class VrArmInput:
         self.grip_engaged = False
         self.clutch.reset()
 
-    def reset_session(self):
-        """Discard all targets and controller anchors from the last 103 run."""
-        self.input_lost()
-        self.arm_target = ARM_HOME
-        self.frame_origin = None
-        self.home_button_last = False
-        self.event = None
-
     def update(self, right, sequence):
         position = tuple(right["pose"][:3])
         if not finite_vector(position, 3):
@@ -380,14 +371,6 @@ class PicoState:
         with self._lock:
             return self._right, self._left, self._updated_at, self._sequence
 
-    def clear_commands(self):
-        """Require a fresh Pico callback before controlling a new 103 run."""
-        with self._lock:
-            self._right = None
-            self._left = None
-            self._updated_at = 0.0
-            self._sequence += 1
-
 
 def default_sdk_candidates():
     candidates = []
@@ -464,17 +447,6 @@ def connect_robot(destination):
     connection.settimeout(1.0)
     print(f"[PXREA Bridge] connected to 103 at {destination[0]}:{destination[1]}")
     return connection
-
-
-def strategy_session_ended(connection):
-    """Detect the 103 shutdown byte or TCP EOF without delaying VR frames."""
-    try:
-        marker = connection.recv(1, socket.MSG_PEEK | socket.MSG_DONTWAIT)
-    except (BlockingIOError, InterruptedError, socket.timeout):
-        return False
-    except OSError:
-        return True
-    return marker in (b"", b"R")
 
 
 def parse_args():
@@ -617,27 +589,6 @@ def self_test():
     right, _left, updated_at, sequence = state.snapshot()
     assert right["pose"][:3] == (1.0, 2.0, 3.0)
     assert updated_at > 0.0 and sequence == 1
-    state.clear_commands()
-    assert state.snapshot()[0:3] == (None, None, 0.0)
-    arm_input = VrArmInput((1.0, 0.0), DEFAULT_ARM_SCALE)
-    arm_input.arm_target = (0.55, 0.1, 0.1)
-    arm_input.frame_origin = (1.0, 2.0, 3.0)
-    arm_input.reset_session()
-    assert arm_input.arm_target == ARM_HOME and arm_input.frame_origin is None
-    bridge_socket, robot_socket = socket.socketpair()
-    try:
-        assert not strategy_session_ended(bridge_socket)
-        robot_socket.sendall(b"R")
-        assert strategy_session_ended(bridge_socket)
-    finally:
-        bridge_socket.close()
-        robot_socket.close()
-    bridge_socket, robot_socket = socket.socketpair()
-    robot_socket.close()
-    try:
-        assert strategy_session_ended(bridge_socket)
-    finally:
-        bridge_socket.close()
     assert len(PACKET.pack(0.0, 0.0, 0.0, *ARM_HOME, 0.08, 0)) == 32
     clutch = SideLockedClutch((1.0, 0.0), 1.5)
     clutch.begin((0.0, 0.0, 0.0), ARM_HOME)
@@ -684,20 +635,6 @@ def run(args):
     last_arm_command_time = None
     home_return_pending = False
     stale_reported = False
-
-    def clear_strategy_session(reason):
-        nonlocal connection, arm_target, commanded_arm_target
-        nonlocal last_arm_command_time, home_return_pending
-        if connection is not None:
-            connection.close()
-            connection = None
-        arm_input.reset_session()
-        pico_state.clear_commands()
-        arm_target = commanded_arm_target = ARM_HOME
-        last_arm_command_time = None
-        home_return_pending = False
-        print(f"\n[PXREA Bridge] 103 {reason}; cleared VR arm/base targets and controller anchors")
-
     print(f"[PXREA Bridge] SDK={sdk_path}")
     print(f"[PXREA Bridge] arm displacement scale={args.scale:g}x")
     print(f"[PXREA Bridge] Cartesian target slew limit={args.arm_max_speed:g} m/s "
@@ -714,10 +651,6 @@ def run(args):
     try:
         while not stop_requested.is_set():
             next_tick += period
-            if connection is not None and strategy_session_ended(connection):
-                clear_strategy_session("strategy session ended")
-                time.sleep(max(0.0, next_tick - time.monotonic()))
-                continue
             right, left, updated_at, sequence = pico_state.snapshot()
             now = time.monotonic()
             fresh = right is not None and now - updated_at <= INPUT_TIMEOUT_S
@@ -733,20 +666,6 @@ def run(args):
                 time.sleep(max(0.0, next_tick - time.monotonic()))
                 continue
             stale_reported = False
-
-            if connection is None and now - last_connect_attempt >= 1.0:
-                last_connect_attempt = now
-                try:
-                    connection = connect_robot(destination)
-                    last_arm_command_time = None
-                except OSError as error:
-                    print(f"\n[PXREA Bridge] waiting for 103: {error}")
-            if connection is None:
-                # Motion while 103 is offline must not accumulate into the
-                # first target sent when the next strategy run connects.
-                arm_input.input_lost()
-                time.sleep(max(0.0, next_tick - time.monotonic()))
-                continue
 
             grip = right["grip"] > GRIP_THRESHOLD
             arm_target, home_requested = arm_input.update(right, sequence)
@@ -768,6 +687,14 @@ def run(args):
             if args.vr_base:
                 vx, wz = base_command_from_left(left)
             gripper_opening_m = gripper_opening_from_trigger(right["trigger"])
+
+            if connection is None and now - last_connect_attempt >= 1.0:
+                last_connect_attempt = now
+                try:
+                    connection = connect_robot(destination)
+                    last_arm_command_time = None
+                except OSError as error:
+                    print(f"\n[PXREA Bridge] waiting for 103: {error}")
 
             if connection is not None:
                 command_dt = (period if last_arm_command_time is None else
@@ -791,13 +718,9 @@ def run(args):
                         home_return_pending = False
                 except OSError as error:
                     print(f"\n[PXREA Bridge] send failed: {error}")
-                    if error.errno in (errno.EAGAIN, errno.EWOULDBLOCK,
-                                       errno.ETIMEDOUT):
-                        connection.close()
-                        connection = None
-                        last_arm_command_time = None
-                    else:
-                        clear_strategy_session("connection lost")
+                    connection.close()
+                    connection = None
+                    last_arm_command_time = None
             else:
                 # Do not consume a large Cartesian jump while 103 is offline.
                 last_arm_command_time = None

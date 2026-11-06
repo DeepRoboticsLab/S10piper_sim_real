@@ -61,8 +61,8 @@
   },
   "103/rl_deploy/interface/user_command/vr_command_interface.hpp": {
     "type": "file",
-    "size": 17740,
-    "sha256": "3d2e6bf5429bac71015468390bfbdce36c4d1fcbf14841fd5395a7484caab7f7",
+    "size": 17375,
+    "sha256": "5d9d148988560b4a9fcebdbc267d689bffdc74d3796c26e0b17d4224ee3c0615",
     "execute_bits": 0
   },
   "103/rl_deploy/main.cpp": {
@@ -3299,14 +3299,14 @@
   },
   "README.md": {
     "type": "file",
-    "size": 12756,
-    "sha256": "bfea02f3bafa7fed39fdf17d6dd1e37067eef40f2b719e4fa96b047fbf8df94c",
+    "size": 12704,
+    "sha256": "c38690388f4033f1b73e4fa46578bd9b684d07c862a0b8666fb4a83ee71df0a8",
     "execute_bits": 0
   },
   "README_EN.md": {
     "type": "file",
-    "size": 15245,
-    "sha256": "327e256c1c7b8be57ab8b67aab295ba7eb0cdfd8418556b532a0e81c1a825d7f",
+    "size": 15184,
+    "sha256": "302cc5d999feb35b6e9c4592e7192be33a57a526b7020279606e92b17f27220f",
     "execute_bits": 0
   },
   "build.sh": {
@@ -3347,8 +3347,8 @@
   },
   "orin/pico_bridge/s10_piper_vr_bridge.py": {
     "type": "file",
-    "size": 35120,
-    "sha256": "52b3acc8ed6ba597609128b644ec6c9397da80b988d41043a20a59106696bef5",
+    "size": 32076,
+    "sha256": "c7475b25a3e94c83aa9c62a5435910c464df09041dd14ca89c49148adee8f43e",
     "execute_bits": 0
   },
   "orin/pico_bridge/vr_axes.json": {

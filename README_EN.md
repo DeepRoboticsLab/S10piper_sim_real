@@ -189,7 +189,7 @@ Press `z` in the 103 terminal, wait for the robot to stand, then press `c` to en
 | Press/release right Trigger | Open/close the gripper; closed is the default. |
 | Right B | Return to the training home pose, clear the base command, and set the current controller position as the new position origin. Direction calibration is unchanged. |
 
-Lateral motion is grouped separately from forward/backward and vertical motion. If VR data is not updated for more than 300 ms, the bridge stops the base command and freezes the arm target. This is not a hardware emergency stop. To finish, press `Ctrl+C` in the 103 terminal first. Its shutdown tells the Orin bridge to clear the previous arm target and controller anchor before you stop the Orin services.
+Lateral motion is grouped separately from forward/backward and vertical motion. If VR data is not updated for more than 300 ms, the bridge stops the base command and freezes the arm target. This is not a hardware emergency stop. To finish, press `Ctrl+C` in the 103 terminal first and wait for a clean shutdown before stopping the Orin services.
 
 ### Change VR scale and coordinate mapping
 
