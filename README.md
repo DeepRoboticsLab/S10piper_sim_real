@@ -121,7 +121,7 @@ cd /home/user/rl_deploy  # 进入传到 103 的控制程序目录
 ./build.sh  # 使用 -j20 编译 drdds、键盘版和 VR 版
 ```
 
-编译结果分别位于 `install_drdds`、`install` 和 `install_vr`。103 的 ARM64 程序需要在 103 编译，不能直接使用电脑上的仿真程序。
+编译结果分别位于 `install_drdds`、`install` 和 `install_vr`。103 的 ARM64 程序需要在 103 编译，不能直接使用电脑上的仿真程序。只编 VR 可执行 `./build.sh vr`；只编键盘版可执行 `./build.sh realtime`。
 
 ### 在 Orin 启动机械臂服务
 
@@ -149,7 +149,7 @@ cd /home/user/rl_deploy  # 进入 103 控制程序目录
 
 ### 启动顺序
 
-先正常退出 103 键盘程序，保持 Orin 机械臂服务运行。键盘版和 VR 版一次只运行一个，默认 `./build.sh` 已编译两种模式。
+先正常退出 103 键盘程序，保持 Orin 机械臂服务运行。键盘版和 VR 版一次只运行一个；103 的 `./build.sh` 不带参数会编译两种模式，也可以用 `./build.sh vr` 或 `./build.sh realtime` 单独编译。
 
 首次使用，在电脑项目根目录上传桥接程序：
 

@@ -121,7 +121,7 @@ cd /home/user/rl_deploy  # Enter the deployment directory uploaded to 103
 ./build.sh  # Build drdds, keyboard mode, and VR mode with -j20
 ```
 
-The build outputs are stored in `install_drdds`, `install`, and `install_vr`. The ARM64 program must be built on 103; the x86_64 simulation executable from the PC cannot be reused on 103.
+The build outputs are stored in `install_drdds`, `install`, and `install_vr`. The ARM64 program must be built on 103; the x86_64 simulation executable from the PC cannot be reused on 103. To build only VR, run `./build.sh vr`; to build only keyboard mode, run `./build.sh realtime`.
 
 ### Start the arm service on Orin
 
@@ -149,7 +149,7 @@ To stop normally, **press `Ctrl+C` in the 103 control terminal first**. Wait for
 
 ### Startup sequence
 
-Exit the 103 keyboard program normally and keep the Orin arm service running. Keyboard and VR modes are mutually exclusive. The default `./build.sh` command builds both modes.
+Exit the 103 keyboard program normally and keep the Orin arm service running. Keyboard and VR modes are mutually exclusive. On 103, `./build.sh` builds both modes by default; use `./build.sh vr` or `./build.sh realtime` to build either mode separately.
 
 For first-time use, upload the bridge from the PC project root:
 

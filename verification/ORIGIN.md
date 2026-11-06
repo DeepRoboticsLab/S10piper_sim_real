@@ -1,6 +1,6 @@
 # 来源、命名与发布边界
 
-本包提供 S10 + Piper 分层控制代码和模型。项目为 `S10piper_sim_real`，控制程序 `rl_deploy`，模型 `policy.onnx`，入口 `build.sh` / `run.sh`。模型字节未修改。
+本包提供 S10 + Piper 分层控制代码和模型。项目为 `S10piper_sim_real`，控制程序 `rl_deploy`，模型 `policy.onnx`；仿真从 `sim/build.sh` 编译，实物从 `103/rl_deploy/build.sh` 编译。模型字节未修改。
 
 模型 SHA256：`ab5a7b7ff15f84ab0d0d8fa028c4c556912c1b1eab0ee6f22231eb09ba8ea81d`。
 

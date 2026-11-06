@@ -7,8 +7,8 @@
   },
   "103/rl_deploy/CMakeLists.txt": {
     "type": "file",
-    "size": 3575,
-    "sha256": "4108cfac254d6134a842c376aa038d4f2ad4fd820e3c70e6fffd075ebc3a156a",
+    "size": 3573,
+    "sha256": "03390d748aa75ff02985d1db2ed782c3cac67579912018598a04dcc10f83be80",
     "execute_bits": 0
   },
   "103/rl_deploy/build.sh": {
@@ -3299,21 +3299,15 @@
   },
   "README.md": {
     "type": "file",
-    "size": 12704,
-    "sha256": "c38690388f4033f1b73e4fa46578bd9b684d07c862a0b8666fb4a83ee71df0a8",
+    "size": 12874,
+    "sha256": "06028f9bdfa4dc6d150a670ddce9847bfa392b35c2c90173bfd4fe6630610e0d",
     "execute_bits": 0
   },
   "README_EN.md": {
     "type": "file",
-    "size": 15184,
-    "sha256": "302cc5d999feb35b6e9c4592e7192be33a57a526b7020279606e92b17f27220f",
+    "size": 15356,
+    "sha256": "5038d3f2f62452f141a18d8fc01c0fa2be587c977d9895eefe2856bcd6abd9ad",
     "execute_bits": 0
-  },
-  "build.sh": {
-    "type": "file",
-    "size": 641,
-    "sha256": "2f5ca7dcda40c7fbb9f0b989c29b0a735552ce9d85b0595e37df86322bd3619e",
-    "execute_bits": 73
   },
   "docs/images/hardware_installation.png": {
     "type": "file",
@@ -3671,8 +3665,8 @@
   },
   "verification/ORIGIN.md": {
     "type": "file",
-    "size": 2255,
-    "sha256": "6c8f3049013ce5a11cd9be0df55cb81c1455e512e038a05562b0298821e109db",
+    "size": 2302,
+    "sha256": "452ae1b705f46c0261c55ab669f3c0b12a38d3aea2132dde4fa0fb11803627f0",
     "execute_bits": 0
   },
   "verification/verify_package.py": {
