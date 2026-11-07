@@ -12,6 +12,14 @@
 
 项目目录为 `S10piper_sim_real`，模型为 `103/rl_deploy/policy/ppo/policy.onnx`，控制程序为 `rl_deploy`。以下按发布包解压到电脑 home 目录说明；解压到其他位置时，修改进入项目的路径即可。
 
+给 AI 编程助手的维护说明见 [AGENTS.md](AGENTS.md)。
+
+## 训练原理（训练代码未开源）
+
+本仓库只提供部署、仿真和运行脚本，不包含训练代码。训练阶段可以理解为一个足臂协同强化学习问题：策略读取机器狗本体状态、腿部关节、机械臂状态和任务指令，在仿真中学习同时保持机身稳定并跟踪末端目标；通过动作约束、工作空间限制和仿真随机化，缩小从仿真到实机的差异。部署端只加载 `103/rl_deploy/policy/ppo/policy.onnx` 进行推理。
+
+想了解整体思路，可参考 [Deep Whole-Body Control](https://github.com/MarkFzp/Deep-Whole-Body-Control) 及其 [CoRL 论文](https://proceedings.mlr.press/v205/fu23a.html)。这些资料用于理解方法，本仓库的策略结构和参数并不等同于该项目。
+
 ## 1. Sim-to-Sim
 
 ### 配置环境并启动

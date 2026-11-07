@@ -12,6 +12,14 @@ Mount a Piper robotic arm on an S10 quadruped and run a coordinated whole-body p
 
 The project directory is `S10piper_sim_real`, the policy is `103/rl_deploy/policy/ppo/policy.onnx`, and the deployment program is `rl_deploy`. The commands below assume the release package is extracted directly under the PC user's home directory. If you extract it elsewhere, adjust the project path accordingly.
 
+AI coding assistants should read [AGENTS.md](AGENTS.md) before modifying the repository.
+
+## Training principle (training code not included)
+
+This repository contains deployment, simulation, and runtime code; it does not include the training source. At a high level, the policy treats the task as whole-body leg-arm coordination: it observes robot proprioception, leg joints, arm state, and task commands, then learns in simulation to keep the body stable while tracking the end-effector target. Action constraints, workspace limits, and simulation randomization reduce the sim-to-real gap. Deployment loads only `103/rl_deploy/policy/ppo/policy.onnx` for inference.
+
+For background, see [Deep Whole-Body Control](https://github.com/MarkFzp/Deep-Whole-Body-Control) and its [CoRL paper](https://proceedings.mlr.press/v205/fu23a.html). These are conceptual references; this repository's policy structure and parameters are not claimed to be identical.
+
 ## 1. Sim-to-Sim
 
 ### Set up and run
