@@ -5,7 +5,7 @@
 <p align="center">
   <img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 与 Piper 足臂协同仿真演示" width="640">
 </p>
--0
+
 <p align="center">S10 与 Piper 足臂协同演示</p>
 
 将 Piper 机械臂装到 S10 机器狗上，运行足臂协同策略。本项目包含电脑仿真、103 实物部署，以及 Pico VR 控制。先在仿真中熟悉按键，再将同一套操作用到实物。
