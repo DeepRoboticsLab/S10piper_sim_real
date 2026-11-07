@@ -1,4 +1,10 @@
 {
+  ".github/workflows/python-package.yml": {
+    "type": "file",
+    "size": 1308,
+    "sha256": "0f1fc4d3d06fbe51f5934354f8012dc298cc6e990cc18a8f3cd7a79db402419f",
+    "execute_bits": 0
+  },
   ".gitignore": {
     "type": "file",
     "size": 410,
@@ -3291,6 +3297,12 @@
     "sha256": "77172ba9c2de551bdb94520ae2bf6878872b12fab37485a58aa3b025bfadc7b6",
     "execute_bits": 0
   },
+  "AGENTS.md": {
+    "type": "file",
+    "size": 5949,
+    "sha256": "6d38b14e945b760b09b2beb6c9f175023de7498fbeeac0eccb8c2c9c7bb62658",
+    "execute_bits": 0
+  },
   "CMakeLists.txt": {
     "type": "file",
     "size": 239,
@@ -3299,14 +3311,14 @@
   },
   "README.md": {
     "type": "file",
-    "size": 13264,
-    "sha256": "21dc986a25ef15ed8129587f9190000d6bdb53f5f38487d1075942f8a17b8e27",
+    "size": 20477,
+    "sha256": "a1bca100dea5e7f16709e5dc1179b194ddf603282e6aea09c0070997b16b7ed3",
     "execute_bits": 0
   },
   "README_EN.md": {
     "type": "file",
-    "size": 15840,
-    "sha256": "913bd51753f37b6bf7c4b211aa3bb5ca05e2b60a27aae2ccb7861a5c81bea9a4",
+    "size": 23770,
+    "sha256": "1e769fabbae8db7d6692a7d9574cfa2d670c67ebd046a69b13b2d24440742cc1",
     "execute_bits": 0
   },
   "docs/3d_print/README.md": {
@@ -3343,6 +3355,30 @@
     "type": "file",
     "size": 136612,
     "sha256": "031aa83784004668e546f5cedb6c6ef0f5ad0d6d817561ffb5b68feb7645eb1f",
+    "execute_bits": 0
+  },
+  "docs/videos/s10_piper_real_demo_1.gif": {
+    "type": "file",
+    "size": 73240321,
+    "sha256": "09778b17da01f9d53161616503a48a88b7f7f6bcadf2cd7a579d09ff9177ba5f",
+    "execute_bits": 0
+  },
+  "docs/videos/s10_piper_real_demo_1.mp4": {
+    "type": "file",
+    "size": 6674587,
+    "sha256": "a722ddc24c21cee84fc4b3d6e6f403c5e0cbef3962c772379ec990e1c98ca4f4",
+    "execute_bits": 0
+  },
+  "docs/videos/s10_piper_real_demo_2.gif": {
+    "type": "file",
+    "size": 46532529,
+    "sha256": "a823ee7b8fc048fc86e8e7b9a077481a25ce66cdd8128079fc526bd99ac079de",
+    "execute_bits": 0
+  },
+  "docs/videos/s10_piper_real_demo_2.mp4": {
+    "type": "file",
+    "size": 5109551,
+    "sha256": "050d89f62c472b0e9ebac0188cc51ec1a62146a49d34ec22947a8105d62ca0a8",
     "execute_bits": 0
   },
   "orin/pico_bridge/run_vr_bridge.sh": {
@@ -3589,7 +3625,7 @@
     "type": "file",
     "size": 319,
     "sha256": "fe009fccd72c4f6b5ae62cd0f983122d35fa4786dd48bed79e15eca52c7f8da2",
-    "execute_bits": 64
+    "execute_bits": 73
   },
   "sim/main.cpp": {
     "type": "file",
@@ -3607,7 +3643,7 @@
     "type": "file",
     "size": 1011,
     "sha256": "af87617940dfe979c0a56d3ef2f9ea8f3d1f887c2d701f51937b586b7223ca46",
-    "execute_bits": 64
+    "execute_bits": 73
   },
   "sim/simulation/bridge_loader.py": {
     "type": "file",
