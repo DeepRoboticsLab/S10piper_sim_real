@@ -5,7 +5,7 @@
 <p align="center">
   <img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 与 Piper 足臂协同仿真演示" width="640">
 </p>
-
+-0
 <p align="center">S10 与 Piper 足臂协同演示</p>
 
 将 Piper 机械臂装到 S10 机器狗上，运行足臂协同策略。本项目包含电脑仿真、103 实物部署，以及 Pico VR 控制。先在仿真中熟悉按键，再将同一套操作用到实物。
@@ -72,6 +72,8 @@ cd "$HOME/S10piper_sim_real/sim"  # 进入仿真目录
 ![S10 的两路 24V 加网口航插与一路 72V 电源航插](docs/images/hardware_installation.png)
 
 *图 1　样机的两路 24V 加网口航插与一路 72V 电源航插；用户必须以自己设备的接口定义为准。*
+
+本项目使用的 3D 打印结构件也随包开源，文件位于 `docs/3d_print/`。其中 `leige3Ddayin.SLDPRT` 是 SolidWorks 零件源文件，用于辅助在 S10 上固定 Orin、Piper 机械臂及相关部件。打印和安装前，请根据自己的设备核对尺寸、紧固件、间隙和承载能力。
 
 本说明采用讲稿中的 Wi-Fi 方案：电脑与 Orin 都连接机器狗热点；103 运行策略，Orin 控制机械臂。Piper 与 Orin 通过 USB-CAN / SocketCAN 通信。
 
@@ -231,7 +233,8 @@ S10piper_sim_real/
 │   └── pico_bridge/             # Pico 手柄数据接收与 VR 指令桥接
 ├── sim/                         # 电脑端 MuJoCo 仿真、环境依赖和启动脚本
 ├── docs/                        # README 使用的项目文档资源
-│   └── images/                  # 演示动画、硬件照片和操作截图
+│   ├── images/                  # 演示动画、硬件照片和操作截图
+│   └── 3d_print/                # 3D 打印结构件源文件
 ├── verification/                # 来源说明及离线发布包完整性校验
 ├── README.md                    # 中文部署说明
 └── README_EN.md                 # 英文部署说明

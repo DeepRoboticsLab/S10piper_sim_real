@@ -73,6 +73,8 @@ On the reference robot, the three side aviation connectors are two integrated Et
 
 *Figure 1. Two 24 V plus network connectors and one 72 V power connector on the reference robot. Users must follow the pinout of their own hardware.*
 
+The 3D-printed structural parts used in this project are also included in the open-source package under `docs/3d_print/`. The `leige3Ddayin.SLDPRT` file is the SolidWorks source for a part that helps mount the Orin, Piper arm, and related components on the S10 platform. Check the dimensions, fasteners, clearances, and load capacity against your own hardware before printing or operating the robot.
+
 This guide uses the Wi-Fi arrangement from the demonstration: the PC and Orin connect to the robot hotspot, 103 runs the policy, and Orin controls Piper. Piper communicates with Orin through USB-CAN / SocketCAN.
 
 ```text
@@ -231,7 +233,8 @@ S10piper_sim_real/
 │   └── pico_bridge/             # Pico tracking receiver and VR command bridge
 ├── sim/                         # PC MuJoCo simulation, dependencies, and launch scripts
 ├── docs/                        # Documentation assets used by the README files
-│   └── images/                  # Demo animation, hardware photo, and operation screenshots
+│   ├── images/                  # Demo animation, hardware photo, and operation screenshots
+│   └── 3d_print/                # 3D-printed structural-part source files
 ├── verification/                # Provenance notes and offline release-integrity checks
 ├── README.md                    # Chinese deployment guide
 └── README_EN.md                 # English deployment guide
