@@ -208,9 +208,12 @@ class Simulation:
         self.recv.setblocking(False)
         self.send = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         self.viewer = None
+        self.viewer_threads = []
         if not args.headless:
             from mujoco import viewer
+            before = set(threading.enumerate())
             self.viewer = viewer.launch_passive(self.model,self.data)
+            self.viewer_threads = list(set(threading.enumerate()) - before)
             self.viewer.cam.distance=2.8
             self.viewer.cam.azimuth=135
             self.viewer.cam.elevation=-18
@@ -281,6 +284,9 @@ class Simulation:
                 count += 1
                 if count%100==0:
                     sample = dict(t=float(self.data.time),root_z=float(self.data.qpos[2]),
+                                  root_position=self.data.qpos[:3].tolist(),
+                                  gripper_position=self.data.qpos[self.fq].tolist(),
+                                  gripper_target=float(self.arm.gripper),
                                   rpy=angles.tolist(),q=self.data.qpos[self.qadr].tolist(),
                                   arm_target=self.arm.target.tolist(),arm_enabled=self.arm.enabled,
                                   arm_motion_count=self.arm.motion_count,
@@ -306,6 +312,13 @@ class Simulation:
             self.recv.close();self.send.close()
             if self.viewer is not None:
                 self.viewer.close()
+                # close() only requests exit. Let the viewer finish destroying
+                # its GL context before Python runs GLFW atexit cleanup.
+                deadline = time.monotonic() + 2.0
+                for thread in self.viewer_threads:
+                    thread.join(timeout=max(0.0, deadline-time.monotonic()))
+                if any(thread.is_alive() for thread in self.viewer_threads):
+                    raise RuntimeError("MuJoCo viewer shutdown timed out")
 
 
 def main():

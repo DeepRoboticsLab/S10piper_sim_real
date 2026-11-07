@@ -31,11 +31,11 @@ case "$TASK_MODE" in
         ;;
     help|-h|--help)
         echo '同一份S10/Piper策略/状态机/键盘/分层IK；仅切换实物或本机仿真接口。'
-        echo './run.sh sim [--auto-start] [--headless --duration 18]'
+        echo './run.sh sim [--headless] [--port-base 11880] [--physics-substeps 2]'
         echo './run.sh real       # 实物分层键盘版，SSH至103'
         echo './run.sh real-vr    # 原实物VR版，SSH至103'
         echo './run.sh orin-arm   # 实物共用机械臂服务（启动会回零）'
-        echo './run.sh orin-vr    # 实物S10/Piper Pico桥接（1.5倍）'
+        echo './run.sh orin-vr    # 实物S10/Piper Pico桥接（默认1.0倍）'
         ;;
     *) echo "未知接口: $TASK_MODE；用 ./run.sh help 查看。" >&2; exit 2;;
 esac

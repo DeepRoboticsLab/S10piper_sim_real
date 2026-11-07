@@ -33,7 +33,7 @@ cd s10-piper-sdk
 
 ### Set up and run
 
-Use an Ubuntu 22.04 x86_64 PC with Conda installed and initialized. Run these commands once:
+Use an Ubuntu 22.04 x86_64 PC with Conda installed and initialized, a working graphical desktop, and permission to install system packages with `sudo`. Simulation does not require ROS 2, Piper SDK, or a robot connection. Run these commands once:
 
 ```bash
 cd "$HOME/s10-piper-sdk"  # Enter the cloned project directory
@@ -42,6 +42,7 @@ sudo apt install -y build-essential cmake python3-dev \
   libgl1 libgl1-mesa-dri libglfw3 libx11-6 libxrandr2 libxinerama1 libxcursor1 libxi6  # Install build and graphics dependencies
 conda create -n s10 python=3.10 pip -y  # Create the Python 3.10 simulation environment; run once
 conda activate s10  # Activate the simulation environment
+unset PYTHONPATH PYTHONHOME  # Keep system/ROS Python packages out of this simulation terminal
 python -m pip install -r sim/requirements-lock.txt  # Install the pinned simulation dependencies
 python -m pip check  # Check for Python dependency conflicts
 cd sim  # Enter the simulation directory
@@ -53,9 +54,19 @@ For later sessions, only run:
 
 ```bash
 conda activate s10  # Activate the existing environment
+unset PYTHONPATH PYTHONHOME  # Keep system/ROS Python packages out of this simulation terminal
 cd "$HOME/s10-piper-sdk/sim"  # Enter the simulation directory
 ./run.sh  # Start simulation; no real hardware is required
 ```
+
+For a machine without a graphical desktop, use `./run.sh --headless` from the same `sim` directory. This still requires an interactive terminal: enter `z`, then `c`, and press `Ctrl+C` to finish. It does not start the policy or exit automatically. If `conda activate` is unavailable, initialize Conda for Bash and reopen the terminal first. If an `s10` environment already exists, reuse it or create a differently named environment and use that name in every activation command.
+
+### Check that startup succeeded
+
+1. Wait for `[SIM] Arm bridge ready.` and the keyboard instructions; the robot starts crouched.
+2. With focus in the **launch terminal**, tap lowercase `z` without Enter. Allow the standing trajectory and arm movement to finish; the terminal shows `idle_state -> standup_state`.
+3. Tap lowercase `c`. Wait for `standup_state -> rl_control` before sending arm or base commands. If that transition does not appear, keep the base stopped and inspect the full log.
+4. On exit, wait for `[SIM] Stopped.` before starting another session.
 
 ### Keyboard controls
 
@@ -76,9 +87,25 @@ Keep focus on the terminal that launched the program and use **lowercase letters
 
 For a basic demonstration, tap `o` to lower the end effector and body, then tap `u` to raise them. Try `i/k` and `j/l` for forward/backward and left/right arm motion. Next, apply small `w/s` and `q/e` inputs to observe base motion at different body heights. Press Space to stop the base, then press `Ctrl+C` to exit.
 
-Simulation uses local loopback communication only and does not connect to the real robot. The terminal displays short English status and fault messages. The full log is stored under `sim/logs/<current-run>/run.log`.
+Simulation uses local loopback communication only and does not connect to the real robot. The full log is stored under `sim/logs/<current-run>/run.log`; `state.json` contains the latest state and `telemetry.json` is written on shutdown. Startup and arm diagnostics may also appear in Chinese. An occasional IK slew-limit message means the target is approached over several frames; repeated feedback, connection, or joint-limit faults require investigation.
+
+Arm directions are relative to the robot: +X forward, +Y left, and +Z up. This controller adjusts the end-effector position through J1–J3; J4–J6 remain at the training home orientation. It does not expose independent wrist/orientation control.
+
+Each `w/s` tap changes the forward command by 0.05; each `q/e` tap changes yaw by 0.20. Selecting forward/reverse clears yaw, and selecting yaw clears forward/reverse; these commands do not combine. Sideways base driving is disabled. Arm taps change the requested target by 0.02 m, subject to workspace limits. Small vertical commands may change posture without a clearly visible body-height change. Space clears the requested base velocity; the current policy can still drift with a zero command and does not provide position hold.
+
+If no window opens, verify the desktop/display connection or use `--headless`. If `pip check` reports unrelated ROS packages, make sure `PYTHONPATH` and `PYTHONHOME` are unset in this simulation terminal. If a local port is already in use, stop your previous session cleanly or run `./run.sh --port-base 12880`. The default local ports are UDP 11880/11882 and TCP 11999.
 
 ## 2. Sim-to-Real
+
+### Which device runs each part?
+
+| Device | Required environment | Files / role |
+| --- | --- | --- |
+| PC | Simulation: Ubuntu 22.04 x86_64, Python 3.10; upload: SSH/SCP | Clone the complete repo; run `sim/` locally; upload the subdirectories below. |
+| S10 controller (103) | ARM64, preinstalled ROS 2 Jazzy, C++17 compiler, CMake, `colcon`, and working manufacturer SDK/DDS access | `/home/user/rl_deploy`: policy and S10 controller. |
+| Orin | Python 3.10, NumPy, Piper SDK 0.6.1, CAN tools and permissions; PXREA service/SDK for VR | `/home/user/piper`: arm service; `/home/user/pico_bridge`: VR bridge. |
+
+`103` is the name used here for the onboard controller, not a fourth computer or a fixed IP suffix. `user` and `/home/user` below are example remote credentials and paths: replace both with the account and home directory on each device. The PC simulation setup does not install the controller or Orin prerequisites.
 
 ### Hardware installation and network
 
@@ -97,7 +124,7 @@ This guide uses the Wi-Fi arrangement from the demonstration: the PC and Orin co
 ```text
 PC ──SSH / SCP──> 103: policy ──ROS 2 / drdds──> S10 legs and wheels
                          └──TCP 9999──> Orin ──CAN──> Piper
-Pico ──robot Wi-Fi──> Orin: VR bridge ──UDP 8089──> 103
+Pico ──robot Wi-Fi──> Orin: VR bridge ──TCP 8089──> 103
 ```
 
 Connect the PC and Orin to the hotspot in their respective terminals. Skip this step if already connected. Replace the SSID and password with those of your robot:
@@ -118,6 +145,8 @@ cd "$HOME/s10-piper-sdk"  # Enter the project root on the PC
 scp -r 103/rl_deploy user@10.21.33.103:/home/user/  # Upload the deployment source to 103
 scp -r orin/piper user@10.21.41.12:/home/user/  # Upload the arm service to Orin
 ```
+
+Before launching anything, update `103/rl_deploy/deploy.conf`, `orin/piper/deploy.conf`, and, for VR, `DEFAULT_ROBOT_IP` in `orin/pico_bridge/s10_piper_vr_bridge.py` as listed in Section 4. Edit before uploading or edit the corresponding files on each remote device afterwards. Verify that 103 can reach Orin on TCP 9999, that Orin's allowlist contains the source IP used by 103, and that Orin can reach 103 on TCP 8089 for VR. `PIPER_CAN_PORT=can2` is a sample CAN interface, not an automatically detected universal default.
 
 Then open two PC terminals and log in to each device. Run all later build and launch commands in the corresponding remote terminal.
 
@@ -166,6 +195,20 @@ To stop normally, **press `Ctrl+C` in the 103 control terminal first**. Wait for
 
 ## 3. Pico VR Control
 
+### First-time setup and direction calibration
+
+Install and authorize XRoboToolkit on Pico and PXREA RoboticsService plus its ARM64 SDK on Orin **before** starting the bridge. The launcher expects `/opt/apps/roboticsservice/runService.sh`; the bridge searches `/opt/apps/roboticsservice/SDK/arm64/libPXREARobotSDK.so` (and the x64 SDK path). For a different layout, configure `PXREA_SERVICE_ROOT` in the launch script and `PXREA_SDK_LIB` to point to the matching library.
+
+The bundled `vr_axes.json` is a reference calibration. Calibrate for your own operator orientation before the first session and after Pico recentering or an orientation change. Keep the S10 controller and Piper arm service stopped, leave the arm disabled, connect Pico to XRoboToolkit, enable `Controller` and `Send`, then run on Orin:
+
+```bash
+cd /home/user/pico_bridge
+./run_vr_bridge.sh --self-test  # Offline JSON, axis, and protocol checks; no robot connection
+./run_vr_bridge.sh --calibrate-right  # Read controller tracking; never connects to 103
+```
+
+Follow the prompts: face the intended operating direction, release right Grip, then hold Grip and move horizontally to your right by 10–20 cm, hold for one second, and release. Return with Grip released and repeat the same rightward stroke. Wait for the calibration-success message and saved `vr_axes.json`. Then start the arm service as described in Section 2 and follow the normal sequence below.
+
 ### Startup sequence
 
 Exit the 103 keyboard program normally and keep the Orin arm service running. Keyboard and VR modes are mutually exclusive. On 103, `./build.sh` builds both modes by default; use `./build.sh vr` or `./build.sh realtime` to build either mode separately.
@@ -182,10 +225,10 @@ Open another PC terminal, log in to Orin, and start the VR bridge:
 ```bash
 ssh user@10.21.41.12  # Open a second Orin session; keep the arm-service terminal running
 cd /home/user/pico_bridge  # Enter the VR bridge directory
-./run_vr_bridge.sh  # Receive controller tracking and forward commands to 103; default scale is 1.5
+./run_vr_bridge.sh  # Receive controller tracking and forward commands to 103; default scale is 1.0
 ```
 
-Connect Pico to the robot Wi-Fi, open XRoboToolkit, and connect to the actual IP of your own Orin (`10.21.41.12` is only the reference address shown in the figure). Confirm that Network shows green `WORKING`, then enable `Controller` and `Send`. After Orin receives controller tracking data, start VR mode on 103:
+Connect Pico to the robot Wi-Fi, open XRoboToolkit, and connect to the actual IP of your own Orin (`10.21.41.12` is only the reference address shown in the figure). Confirm that Network shows green `WORKING`, then enable `Controller` and `Send`. Start VR mode on 103 once those Pico settings are ready. The bridge connects to 103 only when fresh controller data is available; it can wait for the 103 listener during startup:
 
 ![XRoboToolkit connected to Orin and sending Pico controller data](docs/images/xrobotoolkit_connection.png)
 
@@ -196,7 +239,7 @@ cd /home/user/rl_deploy  # Enter the deployment directory on 103
 ./run_vr.sh  # Start VR control
 ```
 
-Press `z` in the 103 terminal, wait for the robot to stand, then press `c` to enter policy control. Center the joysticks and test the right controller with small movements before a full demonstration. For XRoboToolkit installation and operation, refer to the [official website](https://xr-robotics.github.io/). Orin also requires the officially licensed PXREA RoboticsService under `/opt/apps/roboticsservice`. This repository does not include that service, its SDK or shared libraries, or a Pico APK.
+Confirm `[VR] listening TCP 0.0.0.0:8089` on 103 and `[PXREA Bridge] connected to 103 at ...:8089` on Orin. Press `z` in the 103 terminal, wait for the robot to stand, then press `c` to enter policy control. Center the joysticks and test the right controller with small movements before a full demonstration. For XRoboToolkit installation and operation, refer to the [official website](https://xr-robotics.github.io/). Orin also requires the officially licensed PXREA RoboticsService under `/opt/apps/roboticsservice`. This repository does not include that service, its SDK or shared libraries, or a Pico APK.
 
 ### VR controls
 
@@ -208,7 +251,7 @@ Press `z` in the 103 terminal, wait for the robot to stand, then press `c` to en
 | Press/release right Trigger | Open/close the gripper; closed is the default. |
 | Right B | Return to the training home pose, clear the base command, and set the current controller position as the new position origin. Direction calibration is unchanged. |
 
-Lateral motion is grouped separately from forward/backward and vertical motion. If VR data is not updated for more than 300 ms, the bridge stops the base command and freezes the arm target. This is not a hardware emergency stop. To finish, press `Ctrl+C` in the 103 terminal first and wait for a clean shutdown before stopping the Orin services.
+Arm lateral motion and forward/vertical motion are separate control groups: while moving laterally, X/Z targets are held; while moving in X/Z, Y is held. Release and re-engage Grip to set a new relative-motion reference. If VR data is not updated for more than 300 ms, the bridge stops the base command and freezes the arm target. This is not a hardware emergency stop. To finish, press `Ctrl+C` in the 103 terminal first and wait for a clean shutdown before stopping the Orin services.
 
 ### Change VR scale and coordinate mapping
 

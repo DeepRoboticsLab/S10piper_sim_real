@@ -91,8 +91,8 @@
   },
   "103/rl_deploy/run.sh": {
     "type": "file",
-    "size": 3141,
-    "sha256": "07499f0f9033414b70a9c7cb4279a479ccc3d3831659287e49708c8075f7f9ad",
+    "size": 3217,
+    "sha256": "4df2b6b1d3ad8919ebc54372e9d8892eab4db28bb5943aed3a519c7f4100533e",
     "execute_bits": 73
   },
   "103/rl_deploy/run_policy/dwbc_s10_piper_policy_runner_onnx.hpp": {
@@ -3299,14 +3299,14 @@
   },
   "README.md": {
     "type": "file",
-    "size": 16820,
-    "sha256": "d0ccfc948b3b36cca4234ededbe9254c8cb9e9dfd0e85a163c1ea6e866751846",
+    "size": 22857,
+    "sha256": "9000df053c584fe728119fbe69e3df19bc2285d7d41f1ab7533179ca555fad5c",
     "execute_bits": 0
   },
   "README_CN.md": {
     "type": "file",
-    "size": 14239,
-    "sha256": "69bdc606b9f04155d09e4f9e801070448f952a479984ac686f56f0bac1d6be9e",
+    "size": 19623,
+    "sha256": "a7dd58601f369e7b383cc8d03d584ed329362320225d0898dc9f40bd8e3dd449",
     "execute_bits": 0
   },
   "README_EN.md": {
@@ -3407,8 +3407,8 @@
   },
   "run.sh": {
     "type": "file",
-    "size": 1840,
-    "sha256": "414ee76b486e5158235321017e27d5140b0a06322422ad59e6aea76b5a2f5ac9",
+    "size": 1860,
+    "sha256": "027eff6b1bc6fbd0bcd6f9d6986c1a162d7c4a8063ae7e8a7105a3701d18df49",
     "execute_bits": 73
   },
   "sim/CMakeLists.txt": {
@@ -3629,8 +3629,8 @@
   },
   "sim/simulation/layered_mujoco.py": {
     "type": "file",
-    "size": 14135,
-    "sha256": "40287969ac763dc4b2657aa44fac11e5b97be6cdf011652200886c2656a9f82e",
+    "size": 15010,
+    "sha256": "bfc621780c33a01662d8abbd9cda3a4c971c44c68454c4f4ae1797e956a42b44",
     "execute_bits": 0
   },
   "sim/simulation/local_ros_shim/drdds/msg/battery_data.hpp": {

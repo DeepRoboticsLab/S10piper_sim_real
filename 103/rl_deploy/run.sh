@@ -83,4 +83,5 @@ echo 'Entering S10 SDK mode at 200 Hz...'
 sdk_request_mode 200 20
 sdk_mode_entered=1
 export S10_REAL_READ_ONLY=0
-exec "$BINARY" "$@"
+# Keep this shell alive so cleanup releases SDK mode after the controller exits.
+"$BINARY" "$@"
