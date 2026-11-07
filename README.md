@@ -19,7 +19,15 @@
 
 Mount a Piper robotic arm on an S10 quadruped and run a coordinated whole-body policy. This repository includes PC simulation, deployment on the S10 controller (referred to as **103** below), and Pico VR control. Start with simulation to learn the controls, then use the same controls on the real robot.
 
-The project directory is `S10piper_sim_real`, the policy is `103/rl_deploy/policy/ppo/policy.onnx`, and the deployment program is `rl_deploy`. The commands below assume the release package is extracted directly under the PC user's home directory. If you extract it elsewhere, adjust the project path accordingly.
+The project directory is `s10-piper-sdk`, the policy is `103/rl_deploy/policy/ppo/policy.onnx`, and the deployment program is `rl_deploy`. The commands below assume the repository is cloned under the PC user's home directory. If you clone it elsewhere, adjust the project path accordingly.
+
+## Get the Source
+
+```bash
+cd "$HOME"
+git clone https://github.com/DeepRoboticsLab/s10-piper-sdk.git
+cd s10-piper-sdk
+```
 
 ## 1. Sim-to-Sim
 
@@ -28,7 +36,7 @@ The project directory is `S10piper_sim_real`, the policy is `103/rl_deploy/polic
 Use an Ubuntu 22.04 x86_64 PC with Conda installed and initialized. Run these commands once:
 
 ```bash
-cd "$HOME/S10piper_sim_real"  # Enter the extracted project directory
+cd "$HOME/s10-piper-sdk"  # Enter the cloned project directory
 sudo apt update  # Refresh the system package index
 sudo apt install -y build-essential cmake python3-dev \
   libgl1 libgl1-mesa-dri libglfw3 libx11-6 libxrandr2 libxinerama1 libxcursor1 libxi6  # Install build and graphics dependencies
@@ -45,7 +53,7 @@ For later sessions, only run:
 
 ```bash
 conda activate s10  # Activate the existing environment
-cd "$HOME/S10piper_sim_real/sim"  # Enter the simulation directory
+cd "$HOME/s10-piper-sdk/sim"  # Enter the simulation directory
 ./run.sh  # Start simulation; no real hardware is required
 ```
 
@@ -106,7 +114,7 @@ The reference addresses below are `10.21.33.103` for 103 and `10.21.41.12` for O
 Open a terminal on the PC, enter the complete project directory, and upload the source. If a directory with the same name already exists remotely, back it up first instead of overwriting a running environment.
 
 ```bash
-cd "$HOME/S10piper_sim_real"  # Enter the project root on the PC
+cd "$HOME/s10-piper-sdk"  # Enter the project root on the PC
 scp -r 103/rl_deploy user@10.21.33.103:/home/user/  # Upload the deployment source to 103
 scp -r orin/piper user@10.21.41.12:/home/user/  # Upload the arm service to Orin
 ```
@@ -165,7 +173,7 @@ Exit the 103 keyboard program normally and keep the Orin arm service running. Ke
 For first-time use, upload the bridge from the PC project root:
 
 ```bash
-cd "$HOME/S10piper_sim_real"  # Enter the complete project directory on the PC
+cd "$HOME/s10-piper-sdk"  # Enter the complete project directory on the PC
 scp -r orin/pico_bridge user@10.21.41.12:/home/user/  # Upload the VR bridge to Orin
 ```
 
@@ -234,7 +242,7 @@ Normal operation uses the short launch commands shown above. Do not add manual `
 ## Project Structure
 
 ```text
-S10piper_sim_real/
+s10-piper-sdk/
 ├── 103/                         # Deployment files for the onboard S10 controller
 │   └── rl_deploy/               # Policy, control source, build scripts, and launch scripts
 ├── orin/                        # Programs running on Orin

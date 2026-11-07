@@ -3299,14 +3299,14 @@
   },
   "README.md": {
     "type": "file",
-    "size": 16743,
-    "sha256": "c6964e095669c0d5258f2ffb62dcf146dc6b03a7ae3d1a4668902f8678b9537d",
+    "size": 16820,
+    "sha256": "d0ccfc948b3b36cca4234ededbe9254c8cb9e9dfd0e85a163c1ea6e866751846",
     "execute_bits": 0
   },
   "README_CN.md": {
     "type": "file",
-    "size": 14145,
-    "sha256": "d6bf86da5c52b93d4181b2dd17ae1b0e40a49f457a199fbeb968fb1826e8894d",
+    "size": 14239,
+    "sha256": "69bdc606b9f04155d09e4f9e801070448f952a479984ac686f56f0bac1d6be9e",
     "execute_bits": 0
   },
   "README_EN.md": {
@@ -3683,8 +3683,8 @@
   },
   "verification/ORIGIN.md": {
     "type": "file",
-    "size": 2302,
-    "sha256": "452ae1b705f46c0261c55ab669f3c0b12a38d3aea2132dde4fa0fb11803627f0",
+    "size": 2298,
+    "sha256": "779225f2ac2425fcf860a6a7029a6d2cb38229aa2be1c01dfb51d357917a846d",
     "execute_bits": 0
   },
   "verification/verify_package.py": {

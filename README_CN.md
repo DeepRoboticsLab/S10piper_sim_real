@@ -18,7 +18,15 @@
 
 将 Piper 机械臂装到 S10 机器狗上，运行足臂协同策略。本项目包含电脑仿真、103 实物部署，以及 Pico VR 控制。先在仿真中熟悉按键，再将同一套操作用到实物。
 
-项目目录为 `S10piper_sim_real`，模型为 `103/rl_deploy/policy/ppo/policy.onnx`，控制程序为 `rl_deploy`。以下按发布包解压到电脑 home 目录说明；解压到其他位置时，修改进入项目的路径即可。
+项目目录为 `s10-piper-sdk`，模型为 `103/rl_deploy/policy/ppo/policy.onnx`，控制程序为 `rl_deploy`。以下按仓库克隆到电脑 home 目录说明；克隆到其他位置时，修改进入项目的路径即可。
+
+## 获取源码
+
+```bash
+cd "$HOME"
+git clone https://github.com/DeepRoboticsLab/s10-piper-sdk.git
+cd s10-piper-sdk
+```
 
 ## 1. Sim-to-Sim
 
@@ -27,7 +35,7 @@
 电脑使用 Ubuntu 22.04 / x86_64，提前安装并初始化 Conda。首次使用执行：
 
 ```bash
-cd "$HOME/S10piper_sim_real"  # 进入解压后的完整项目目录
+cd "$HOME/s10-piper-sdk"  # 进入克隆后的完整项目目录
 sudo apt update  # 更新系统软件包索引
 sudo apt install -y build-essential cmake python3-dev \
   libgl1 libgl1-mesa-dri libglfw3 libx11-6 libxrandr2 libxinerama1 libxcursor1 libxi6  # 安装编译和图形依赖
@@ -44,7 +52,7 @@ cd sim  # 进入仿真目录
 
 ```bash
 conda activate s10  # 激活已安装依赖的环境
-cd "$HOME/S10piper_sim_real/sim"  # 进入仿真目录
+cd "$HOME/s10-piper-sdk/sim"  # 进入仿真目录
 ./run.sh  # 启动仿真，不需要连接实物
 ```
 
@@ -105,7 +113,7 @@ sudo nmcli --ask device wifi connect "你的机器狗热点名称"  # 连接热�
 在电脑上另开终端，进入完整项目根目录上传。远程已有同名目录时先备份，不覆盖正在使用的环境。
 
 ```bash
-cd "$HOME/S10piper_sim_real"  # 进入电脑上的项目根目录
+cd "$HOME/s10-piper-sdk"  # 进入电脑上的项目根目录
 scp -r 103/rl_deploy user@10.21.33.103:/home/user/  # 将控制程序源码传到 103
 scp -r orin/piper user@10.21.41.12:/home/user/  # 将机械臂服务源码传到 Orin
 ```
@@ -164,7 +172,7 @@ cd /home/user/rl_deploy  # 进入 103 控制程序目录
 首次使用，在电脑项目根目录上传桥接程序：
 
 ```bash
-cd "$HOME/S10piper_sim_real"  # 进入电脑上的完整项目目录
+cd "$HOME/s10-piper-sdk"  # 进入电脑上的完整项目目录
 scp -r orin/pico_bridge user@10.21.41.12:/home/user/  # 将 VR 桥接传到 Orin
 ```
 
@@ -233,7 +241,7 @@ DEFAULT_ARM_SCALE = 1.0  # 手移动 10cm，机械臂目标约移动 10cm
 ## 项目结构
 
 ```text
-S10piper_sim_real/
+s10-piper-sdk/
 ├── 103/                         # S10 机载 103 控制器部署文件
 │   └── rl_deploy/               # 策略模型、控制源码、编译和运行脚本
 ├── orin/                        # Orin 侧程序
