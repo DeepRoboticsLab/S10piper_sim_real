@@ -3299,14 +3299,20 @@
   },
   "README.md": {
     "type": "file",
-    "size": 13264,
-    "sha256": "21dc986a25ef15ed8129587f9190000d6bdb53f5f38487d1075942f8a17b8e27",
+    "size": 16743,
+    "sha256": "c6964e095669c0d5258f2ffb62dcf146dc6b03a7ae3d1a4668902f8678b9537d",
+    "execute_bits": 0
+  },
+  "README_CN.md": {
+    "type": "file",
+    "size": 14145,
+    "sha256": "d6bf86da5c52b93d4181b2dd17ae1b0e40a49f457a199fbeb968fb1826e8894d",
     "execute_bits": 0
   },
   "README_EN.md": {
     "type": "file",
-    "size": 15840,
-    "sha256": "913bd51753f37b6bf7c4b211aa3bb5ca05e2b60a27aae2ccb7861a5c81bea9a4",
+    "size": 164,
+    "sha256": "04d24b2a7ca01ef12eac8e7bcb19ab11f9597fa71672aab92d5c3bbe75d5bc71",
     "execute_bits": 0
   },
   "docs/3d_print/README.md": {
@@ -3589,7 +3595,7 @@
     "type": "file",
     "size": 319,
     "sha256": "fe009fccd72c4f6b5ae62cd0f983122d35fa4786dd48bed79e15eca52c7f8da2",
-    "execute_bits": 64
+    "execute_bits": 73
   },
   "sim/main.cpp": {
     "type": "file",
@@ -3607,7 +3613,7 @@
     "type": "file",
     "size": 1011,
     "sha256": "af87617940dfe979c0a56d3ef2f9ea8f3d1f887c2d701f51937b586b7223ca46",
-    "execute_bits": 64
+    "execute_bits": 73
   },
   "sim/simulation/bridge_loader.py": {
     "type": "file",
