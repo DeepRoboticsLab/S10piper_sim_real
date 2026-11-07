@@ -13,9 +13,9 @@
 
 <table>
   <tr>
-    <td align="center"><strong>Sim-to-Sim</strong><br><img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 与 Piper 足臂协同仿真演示" width="260"></td>
-    <td align="center"><strong>实物演示 1</strong><br><a href="docs/videos/s10_piper_real_demo_1.mp4"><img src="docs/videos/s10_piper_real_demo_1.gif" alt="S10 与 Piper 实物演示 1" width="260"></a></td>
-    <td align="center"><strong>实物演示 2</strong><br><a href="docs/videos/s10_piper_real_demo_2.mp4"><img src="docs/videos/s10_piper_real_demo_2.gif" alt="S10 与 Piper 实物演示 2" width="260"></a></td>
+    <td align="center"><strong>Sim-to-Sim</strong><br><img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 与 Piper 足臂协同仿真演示" width="380"></td>
+    <td align="center"><strong>实物演示 1</strong><br><a href="docs/videos/s10_piper_real_demo_1.mp4"><img src="docs/videos/s10_piper_real_demo_1.gif" alt="S10 与 Piper 实物演示 1" width="380"></a></td>
+    <td align="center"><strong>实物演示 2</strong><br><a href="docs/videos/s10_piper_real_demo_2.mp4"><img src="docs/videos/s10_piper_real_demo_2.gif" alt="S10 与 Piper 实物演示 2" width="380"></a></td>
   </tr>
 </table>
 
@@ -308,4 +308,4 @@ S10piper_sim_real/
 
 ## 训练参考
 
-本仓库只提供部署、仿真和运行脚本，不包含训练代码。想了解足臂协同强化学习的整体思路，可参考 [Deep Whole-Body Control](https://github.com/MarkFzp/Deep-Whole-Body-Control) 及其 [CoRL 论文](https://proceedings.mlr.press/v205/fu23a.html)。这些资料用于理解方法，本仓库的策略结构和参数并不等同于该项目。
+本仓库只提供部署、仿真和运行脚本，不包含训练代码。想了解足臂协同强化学习的整体思路，可参考 [Deep Whole-Body Control](https://github.com/MarkFzp/Deep-Whole-Body-Control) 及其 [CoRL 论文](https://proceedings.mlr.press/v205/fu23a.html)。

@@ -13,9 +13,9 @@ English | [简体中文](README.md)
 
 <table>
   <tr>
-    <td align="center"><strong>Sim-to-Sim</strong><br><img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 and Piper coordinated simulation demo" width="260"></td>
-    <td align="center"><strong>Real-robot demo 1</strong><br><a href="docs/videos/s10_piper_real_demo_1.mp4"><img src="docs/videos/s10_piper_real_demo_1.gif" alt="S10 and Piper real-robot demo 1" width="260"></a></td>
-    <td align="center"><strong>Real-robot demo 2</strong><br><a href="docs/videos/s10_piper_real_demo_2.mp4"><img src="docs/videos/s10_piper_real_demo_2.gif" alt="S10 and Piper real-robot demo 2" width="260"></a></td>
+    <td align="center"><strong>Sim-to-Sim</strong><br><img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 and Piper coordinated simulation demo" width="380"></td>
+    <td align="center"><strong>Real-robot demo 1</strong><br><a href="docs/videos/s10_piper_real_demo_1.mp4"><img src="docs/videos/s10_piper_real_demo_1.gif" alt="S10 and Piper real-robot demo 1" width="380"></a></td>
+    <td align="center"><strong>Real-robot demo 2</strong><br><a href="docs/videos/s10_piper_real_demo_2.mp4"><img src="docs/videos/s10_piper_real_demo_2.gif" alt="S10 and Piper real-robot demo 2" width="380"></a></td>
   </tr>
 </table>
 
@@ -308,4 +308,4 @@ S10piper_sim_real/
 
 ## Training reference
 
-This repository contains deployment, simulation, and runtime code; it does not include the training source. For a high-level introduction to whole-body leg-arm reinforcement learning, see [Deep Whole-Body Control](https://github.com/MarkFzp/Deep-Whole-Body-Control) and its [CoRL paper](https://proceedings.mlr.press/v205/fu23a.html). These are conceptual references; this repository's policy structure and parameters are not claimed to be identical.
+This repository contains deployment, simulation, and runtime code; it does not include the training source. For a high-level introduction to whole-body leg-arm reinforcement learning, see [Deep Whole-Body Control](https://github.com/MarkFzp/Deep-Whole-Body-Control) and its [CoRL paper](https://proceedings.mlr.press/v205/fu23a.html).
