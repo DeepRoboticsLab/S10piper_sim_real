@@ -8,17 +8,20 @@
 
 <p align="center">S10 与 Piper 足臂协同演示</p>
 
+## 实物演示
+
+下面是两段实物运行视频，分别展示 S10 与 Piper 的足臂协同效果：
+
+<table>
+  <tr>
+    <td align="center"><strong>实物演示 1</strong><br><video controls preload="metadata" width="100%"><source src="docs/videos/s10_piper_real_demo_1.mp4" type="video/mp4">无法播放视频，请点击<a href="docs/videos/s10_piper_real_demo_1.mp4">下载视频</a>。</video></td>
+    <td align="center"><strong>实物演示 2</strong><br><video controls preload="metadata" width="100%"><source src="docs/videos/s10_piper_real_demo_2.mp4" type="video/mp4">无法播放视频，请点击<a href="docs/videos/s10_piper_real_demo_2.mp4">下载视频</a>。</video></td>
+  </tr>
+</table>
+
 将 Piper 机械臂装到 S10 机器狗上，运行足臂协同策略。本项目包含电脑仿真、103 实物部署，以及 Pico VR 控制。先在仿真中熟悉按键，再将同一套操作用到实物。
 
 项目目录为 `S10piper_sim_real`，模型为 `103/rl_deploy/policy/ppo/policy.onnx`，控制程序为 `rl_deploy`。以下按发布包解压到电脑 home 目录说明；解压到其他位置时，修改进入项目的路径即可。
-
-给 AI 编程助手的维护说明见 [AGENTS.md](AGENTS.md)。
-
-## 训练原理（训练代码未开源）
-
-本仓库只提供部署、仿真和运行脚本，不包含训练代码。训练阶段可以理解为一个足臂协同强化学习问题：策略读取机器狗本体状态、腿部关节、机械臂状态和任务指令，在仿真中学习同时保持机身稳定并跟踪末端目标；通过动作约束、工作空间限制和仿真随机化，缩小从仿真到实机的差异。部署端只加载 `103/rl_deploy/policy/ppo/policy.onnx` 进行推理。
-
-想了解整体思路，可参考 [Deep Whole-Body Control](https://github.com/MarkFzp/Deep-Whole-Body-Control) 及其 [CoRL 论文](https://proceedings.mlr.press/v205/fu23a.html)。这些资料用于理解方法，本仓库的策略结构和参数并不等同于该项目。
 
 ## 1. Sim-to-Sim
 
@@ -242,8 +245,13 @@ S10piper_sim_real/
 ├── sim/                         # 电脑端 MuJoCo 仿真、环境依赖和启动脚本
 ├── docs/                        # README 使用的项目文档资源
 │   ├── images/                  # 演示动画、硬件照片和操作截图
+│   ├── videos/                  # 实物演示视频
 │   └── 3d_print/                # 3D 打印结构件源文件
 ├── verification/                # 来源说明及离线发布包完整性校验
 ├── README.md                    # 中文部署说明
 └── README_EN.md                 # 英文部署说明
 ```
+
+## 训练参考
+
+本仓库只提供部署、仿真和运行脚本，不包含训练代码。想了解足臂协同强化学习的整体思路，可参考 [Deep Whole-Body Control](https://github.com/MarkFzp/Deep-Whole-Body-Control) 及其 [CoRL 论文](https://proceedings.mlr.press/v205/fu23a.html)。这些资料用于理解方法，本仓库的策略结构和参数并不等同于该项目。

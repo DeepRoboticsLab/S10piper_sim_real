@@ -8,17 +8,20 @@ English | [简体中文](README.md)
 
 <p align="center">S10 and Piper coordinated-control demo</p>
 
+## Real-robot demos
+
+The two videos below show the S10 and Piper whole-body coordination on the real robot:
+
+<table>
+  <tr>
+    <td align="center"><strong>Real-robot demo 1</strong><br><video controls preload="metadata" width="100%"><source src="docs/videos/s10_piper_real_demo_1.mp4" type="video/mp4">Video unavailable; <a href="docs/videos/s10_piper_real_demo_1.mp4">download it here</a>.</video></td>
+    <td align="center"><strong>Real-robot demo 2</strong><br><video controls preload="metadata" width="100%"><source src="docs/videos/s10_piper_real_demo_2.mp4" type="video/mp4">Video unavailable; <a href="docs/videos/s10_piper_real_demo_2.mp4">download it here</a>.</video></td>
+  </tr>
+</table>
+
 Mount a Piper robotic arm on an S10 quadruped and run a coordinated whole-body policy. This repository includes PC simulation, deployment on the S10 controller (referred to as **103** below), and Pico VR control. Start with simulation to learn the controls, then use the same controls on the real robot.
 
 The project directory is `S10piper_sim_real`, the policy is `103/rl_deploy/policy/ppo/policy.onnx`, and the deployment program is `rl_deploy`. The commands below assume the release package is extracted directly under the PC user's home directory. If you extract it elsewhere, adjust the project path accordingly.
-
-AI coding assistants should read [AGENTS.md](AGENTS.md) before modifying the repository.
-
-## Training principle (training code not included)
-
-This repository contains deployment, simulation, and runtime code; it does not include the training source. At a high level, the policy treats the task as whole-body leg-arm coordination: it observes robot proprioception, leg joints, arm state, and task commands, then learns in simulation to keep the body stable while tracking the end-effector target. Action constraints, workspace limits, and simulation randomization reduce the sim-to-real gap. Deployment loads only `103/rl_deploy/policy/ppo/policy.onnx` for inference.
-
-For background, see [Deep Whole-Body Control](https://github.com/MarkFzp/Deep-Whole-Body-Control) and its [CoRL paper](https://proceedings.mlr.press/v205/fu23a.html). These are conceptual references; this repository's policy structure and parameters are not claimed to be identical.
 
 ## 1. Sim-to-Sim
 
@@ -242,8 +245,13 @@ S10piper_sim_real/
 ├── sim/                         # PC MuJoCo simulation, dependencies, and launch scripts
 ├── docs/                        # Documentation assets used by the README files
 │   ├── images/                  # Demo animation, hardware photo, and operation screenshots
+│   ├── videos/                  # Real-robot demo videos
 │   └── 3d_print/                # 3D-printed structural-part source files
 ├── verification/                # Provenance notes and offline release-integrity checks
 ├── README.md                    # Chinese deployment guide
 └── README_EN.md                 # English deployment guide
 ```
+
+## Training reference
+
+This repository contains deployment, simulation, and runtime code; it does not include the training source. For a high-level introduction to whole-body leg-arm reinforcement learning, see [Deep Whole-Body Control](https://github.com/MarkFzp/Deep-Whole-Body-Control) and its [CoRL paper](https://proceedings.mlr.press/v205/fu23a.html). These are conceptual references; this repository's policy structure and parameters are not claimed to be identical.
