@@ -5,11 +5,11 @@
 [![PICO XR](https://img.shields.io/badge/XR-PICO-00AEEF)](https://www.picoxr.com/)
 [![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C?logo=cplusplus)](https://en.cppreference.com/w/cpp/17)
 [![Python](https://img.shields.io/badge/python-3.10-blue.svg)](https://docs.python.org/3.10/)
-[![x86_64](https://img.shields.io/badge/platform-x86__64-lightgrey)](README_EN.md#1-sim-to-sim)
-[![ARM64](https://img.shields.io/badge/platform-ARM64-lightgrey)](README_EN.md#2-sim-to-real)
+[![x86_64](https://img.shields.io/badge/platform-x86__64-lightgrey)](README.md#1-sim-to-sim)
+[![ARM64](https://img.shields.io/badge/platform-ARM64-lightgrey)](README.md#2-sim-to-real)
 [![Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white)](https://discord.gg/gdM9mQutC8)
 
-English | [简体中文](README.md)
+English | [简体中文](README_CN.md)
 
 <table>
   <tr>
@@ -25,6 +25,8 @@ Mount a Piper robotic arm on an S10 quadruped and run a coordinated whole-body p
 
 The project directory is `S10piper_sim_real`, the policy is `103/rl_deploy/policy/ppo/policy.onnx`, and the deployment program is `rl_deploy`. The commands below assume the repository is cloned under the PC user's home directory. If you clone it elsewhere, adjust the project path accordingly.
 
+Maintenance notes for AI coding assistants and repository maintainers are collected in [AGENTS.md](AGENTS.md). The README is the user-facing guide; AGENTS.md records project topology and practical debugging context.
+
 ## Get the Source
 
 ```bash
@@ -35,7 +37,7 @@ cd S10piper_sim_real
 
 ## 1. Sim-to-Sim
 
-### Set up and run
+### 1.1 Set up and run
 
 Use an Ubuntu 22.04 x86_64 PC with Conda installed and initialized, a working graphical desktop, and permission to install system packages with `sudo`. Simulation does not require ROS 2, Piper SDK, or a robot connection. Run these commands once:
 
@@ -65,14 +67,14 @@ cd "$HOME/S10piper_sim_real/sim"  # Enter the simulation directory
 
 For a machine without a graphical desktop, use `./run.sh --headless` from the same `sim` directory. This still requires an interactive terminal: enter `z`, then `c`, and press `Ctrl+C` to finish. It does not start the policy or exit automatically. If `conda activate` is unavailable, initialize Conda for Bash and reopen the terminal first. If an `s10` environment already exists, reuse it or create a differently named environment and use that name in every activation command.
 
-### Check that startup succeeded
+### 1.2 Check that startup succeeded
 
 1. Wait for `[SIM] Arm bridge ready.` and the keyboard instructions; the robot starts crouched.
 2. With focus in the **launch terminal**, tap lowercase `z` without Enter. Allow the standing trajectory and arm movement to finish; the terminal shows `idle_state -> standup_state`.
 3. Tap lowercase `c`. Wait for `standup_state -> rl_control` before sending arm or base commands. If that transition does not appear, keep the base stopped and inspect the full log.
 4. On exit, wait for `[SIM] Stopped.` before starting another session.
 
-### Keyboard controls
+### 1.3 Keyboard controls
 
 Keep focus on the terminal that launched the program and use **lowercase letters**. Press `z` first; after the robot is standing, press `c`. Simulation and real-hardware modes use the same keys.
 
@@ -92,7 +94,7 @@ Keep focus on the terminal that launched the program and use **lowercase letters
 
 ## 2. Sim-to-Real
 
-### Which device runs each part?
+### 2.1 Which device runs each part?
 
 | Device | Required environment | Files / role |
 | --- | --- | --- |
@@ -102,7 +104,7 @@ Keep focus on the terminal that launched the program and use **lowercase letters
 
 `103` is the name used here for the onboard controller, not a fourth computer or a fixed IP suffix. `user` and `/home/user` below are example remote credentials and paths: replace both with the account and home directory on each device. The PC simulation setup does not install the controller or Orin prerequisites.
 
-### Hardware installation and network
+### 2.2 Hardware installation and power
 
 Secure the Piper arm, Orin, and all cables before deployment. Follow the manufacturers' documentation to prepare the S10 SDK, communication environment, and control permission. Install the Piper SDK and its dependencies on Orin.
 
@@ -113,6 +115,8 @@ On the reference robot, the three side aviation connectors are two integrated Et
 *Figure 1. Two 24 V plus network connectors and one 72 V power connector on the reference robot. Users must follow the pinout of their own hardware.*
 
 The 3D-printed structural parts used in this project are also included in the open-source package under `docs/3d_print/`. The `leige3Ddayin.SLDPRT` file is the SolidWorks source for a part that helps mount the Orin, Piper arm, and related components on the S10 platform. Check the dimensions, fasteners, clearances, and load capacity against your own hardware before printing or operating the robot.
+
+### 2.3 Network connections
 
 This guide uses the Wi-Fi arrangement from the demonstration: the PC and Orin connect to the robot hotspot, 103 runs the policy, and Orin controls Piper. Piper communicates with Orin through USB-CAN / SocketCAN.
 
@@ -131,7 +135,9 @@ sudo nmcli --ask device wifi connect "YOUR_ROBOT_HOTSPOT"  # Connect and enter t
 
 The reference addresses below are `10.21.33.103` for 103 and `10.21.41.12` for Orin. **`10.21.41.12` is the author's current reference-Orin address, not a universal default. Replace it with the actual address of your own Orin on the robot network everywhere below, including SSH, SCP, XRoboToolkit, and configuration files.** The examples use the default SSH port 22 and prompt for each device's account password; preconfigured SSH keys are not required. Verify the host fingerprint on the first connection. For another robot, update the configuration files listed in Section 4.
 
-### Copy files to 103 and Orin
+### 2.4 Copy files to 103 and Orin
+
+#### 2.4.1 Upload files
 
 Open a terminal on the PC, enter the complete project directory, and upload the source. If a directory with the same name already exists remotely, back it up first instead of overwriting a running environment.
 
@@ -142,6 +148,8 @@ scp -r orin/piper user@10.21.41.12:/home/user/  # Upload the arm service to Orin
 ```
 
 Before launching anything, update `103/rl_deploy/deploy.conf`, `orin/piper/deploy.conf`, and, for VR, `DEFAULT_ROBOT_IP` in `orin/pico_bridge/s10_piper_vr_bridge.py` as listed in Section 4. Edit before uploading or edit the corresponding files on each remote device afterwards. Verify that 103 can reach Orin on TCP 9999, that Orin's allowlist contains the source IP used by 103, and that Orin can reach 103 on TCP 8089 for VR. `PIPER_CAN_PORT=can2` is a sample CAN interface, not an automatically detected universal default.
+
+#### 2.4.2 Open SSH sessions
 
 Then open two PC terminals and log in to each device. Run all later build and launch commands in the corresponding remote terminal.
 
@@ -155,7 +163,7 @@ ssh user@10.21.33.103  # Log in to 103 for policy, keyboard, or VR control
 ssh user@10.21.41.12  # Log in to Orin for the arm service
 ```
 
-### Build on 103
+### 2.5 Build on 103
 
 103 uses its existing ROS 2 Jazzy and compiler environment. The vendor `drdds` interface source is stored in `vendor/drdds`; the build script installs it inside the project directory and does not modify `/opt/ros`.
 
@@ -166,7 +174,7 @@ cd /home/user/rl_deploy  # Enter the deployment directory uploaded to 103
 
 The build outputs are stored in `install_drdds`, `install`, and `install_vr`. The ARM64 program must be built on 103; the x86_64 simulation executable from the PC cannot be reused on 103. To build only VR, run `./build.sh vr`; to build only keyboard mode, run `./build.sh realtime`.
 
-### Start the arm service on Orin
+### 2.6 Start the arm service on Orin
 
 On your own Orin, prepare Python 3.10, NumPy, Piper SDK (this package targets `piper_sdk==0.6.1`), CAN utilities, and a valid CAN configuration. Obtain Piper SDK from the [official AgileX Robotics Piper SDK repository](https://github.com/agilexrobotics/piper_sdk), follow its installation instructions, and confirm that the arm firmware and SDK interface version are compatible. The Piper SDK source is not bundled in this repository.
 
@@ -177,7 +185,7 @@ cd /home/user/piper  # Enter the arm-service directory on Orin
 
 Wait for J1/J2 to return to the mechanical zero, followed by J3-J6. Leave this terminal running after homing completes. The service receives targets from 103 and returns arm state to 103. If feedback is abnormal, stop and check CAN, the SDK, and wiring before standing the robot or entering policy control.
 
-### Run keyboard control on 103
+### 2.7 Run keyboard control on 103
 
 ```bash
 cd /home/user/rl_deploy  # Enter the deployment directory on 103
@@ -190,7 +198,7 @@ To stop normally, **press `Ctrl+C` in the 103 control terminal first**. Wait for
 
 ## 3. Pico VR Control
 
-### First-time setup and direction calibration
+### 3.1 First-time setup and direction calibration
 
 Install and authorize XRoboToolkit on Pico and PXREA RoboticsService plus its ARM64 SDK on Orin **before** starting the bridge. The launcher expects `/opt/apps/roboticsservice/runService.sh`; the bridge searches `/opt/apps/roboticsservice/SDK/arm64/libPXREARobotSDK.so` (and the x64 SDK path). For a different layout, configure `PXREA_SERVICE_ROOT` in the launch script and `PXREA_SDK_LIB` to point to the matching library.
 
@@ -204,7 +212,7 @@ cd /home/user/pico_bridge
 
 Follow the prompts: face the intended operating direction, release right Grip, then hold Grip and move horizontally to your right by 10–20 cm, hold for one second, and release. Return with Grip released and repeat the same rightward stroke. Wait for the calibration-success message and saved `vr_axes.json`. Then start the arm service as described in Section 2 and follow the normal sequence below.
 
-### Startup sequence
+### 3.2 Startup sequence
 
 Exit the 103 keyboard program normally and keep the Orin arm service running. Keyboard and VR modes are mutually exclusive. On 103, `./build.sh` builds both modes by default; use `./build.sh vr` or `./build.sh realtime` to build either mode separately.
 
@@ -236,7 +244,7 @@ cd /home/user/rl_deploy  # Enter the deployment directory on 103
 
 Confirm `[VR] listening TCP 0.0.0.0:8089` on 103 and `[PXREA Bridge] connected to 103 at ...:8089` on Orin. Press `z` in the 103 terminal, wait for the robot to stand, then press `c` to enter policy control. Center the joysticks and test the right controller with small movements before a full demonstration. For XRoboToolkit installation and operation, refer to the [official website](https://xr-robotics.github.io/). Orin also requires the officially licensed PXREA RoboticsService under `/opt/apps/roboticsservice`. This repository does not include that service, its SDK or shared libraries, or a Pico APK.
 
-### VR controls
+### 3.3 VR controls
 
 | Input | Action |
 | --- | --- |
@@ -248,7 +256,7 @@ Confirm `[VR] listening TCP 0.0.0.0:8089` on 103 and `[PXREA Bridge] connected t
 
 Arm lateral motion and forward/vertical motion are separate control groups: while moving laterally, X/Z targets are held; while moving in X/Z, Y is held. Release and re-engage Grip to set a new relative-motion reference. If VR data is not updated for more than 300 ms, the bridge stops the base command and freezes the arm target. This is not a hardware emergency stop. To finish, press `Ctrl+C` in the 103 terminal first and wait for a clean shutdown before stopping the Orin services.
 
-### Change VR scale and coordinate mapping
+### 3.4 Change VR scale and coordinate mapping
 
 Edit `/home/user/pico_bridge/s10_piper_vr_bridge.py` on Orin near the top of the file:
 
@@ -266,6 +274,8 @@ The scale changes **target displacement, not motor speed**. Workspace and rate l
 
 ## 4. Configuration for Another Robot
 
+### 4.1 Which files to edit
+
 Normal operation uses the short launch commands shown above. Do not add manual `export` statements, addresses, or scale arguments to every launch command. Change the configuration once, then restart the corresponding program.
 
 | File | Setting |
@@ -275,9 +285,11 @@ Normal operation uses the short launch commands shown above. Do not add manual `
 | Top of `orin/pico_bridge/s10_piper_vr_bridge.py` | `DEFAULT_ROBOT_IP`: 103 address (`10.21.41.1` on the reference robot); `DEFAULT_ARM_SCALE`: motion scale; `DEFAULT_VR_BASE`: joystick base-control switch. |
 | `orin/pico_bridge/vr_axes.json` | Controller-axis calibration. |
 
+### 4.2 Network address notes
+
 `10.21.33.103` and `10.21.41.1` are addresses of the same 103 controller on different subnets on the reference robot. Always use addresses that match the actual robot network. The examples use Wi-Fi, but the software communicates by IP and does not require a specific network-interface type; a wired setup only needs mutually reachable addresses.
 
-## Project Structure
+## 5. Project Structure
 
 ```text
 S10piper_sim_real/
@@ -292,11 +304,12 @@ S10piper_sim_real/
 │   ├── videos/                  # Real-robot demo GIFs and MP4 files
 │   └── 3d_print/                # 3D-printed structural-part source files
 ├── verification/                # Provenance notes and offline release-integrity checks
-├── README.md                    # Chinese deployment guide
-└── README_EN.md                 # English deployment guide
+├── AGENTS.md                    # AI assistant and maintainer notes
+├── README.md                    # English deployment guide
+└── README_CN.md                 # Chinese deployment guide
 ```
 
 
-## Training reference
+## 6. Training reference
 
 This repository contains deployment, simulation, and runtime code; it does not include the training source. For a high-level introduction to whole-body leg-arm reinforcement learning, see [Deep Whole-Body Control](https://github.com/MarkFzp/Deep-Whole-Body-Control) and its [CoRL paper](https://proceedings.mlr.press/v205/fu23a.html).
