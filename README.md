@@ -89,15 +89,6 @@ Keep focus on the terminal that launched the program and use **lowercase letters
 | Space | Clear the base velocity command. This is not a hardware emergency stop. |
 | `Ctrl+C` | Exit normally. See the real-hardware shutdown sequence below. |
 
-For a basic demonstration, tap `o` to lower the end effector and body, then tap `u` to raise them. Try `i/k` and `j/l` for forward/backward and left/right arm motion. Next, apply small `w/s` and `q/e` inputs to observe base motion at different body heights. Press Space to stop the base, then press `Ctrl+C` to exit.
-
-Simulation uses local loopback communication only and does not connect to the real robot. The full log is stored under `sim/logs/<current-run>/run.log`; `state.json` contains the latest state and `telemetry.json` is written on shutdown. Startup and arm diagnostics may also appear in Chinese. An occasional IK slew-limit message means the target is approached over several frames; repeated feedback, connection, or joint-limit faults require investigation.
-
-Arm directions are relative to the robot: +X forward, +Y left, and +Z up. This controller adjusts the end-effector position through J1–J3; J4–J6 remain at the training home orientation. It does not expose independent wrist/orientation control.
-
-Each `w/s` tap changes the forward command by 0.05; each `q/e` tap changes yaw by 0.20. Selecting forward/reverse clears yaw, and selecting yaw clears forward/reverse; these commands do not combine. Sideways base driving is disabled. Arm taps change the requested target by 0.02 m, subject to workspace limits. Small vertical commands may change posture without a clearly visible body-height change. Space clears the requested base velocity; the current policy can still drift with a zero command and does not provide position hold.
-
-If no window opens, verify the desktop/display connection or use `--headless`. If `pip check` reports unrelated ROS packages, make sure `PYTHONPATH` and `PYTHONHOME` are unset in this simulation terminal. If a local port is already in use, stop your previous session cleanly or run `./run.sh --port-base 12880`. The default local ports are UDP 11880/11882 and TCP 11999.
 
 ## 2. Sim-to-Real
 
