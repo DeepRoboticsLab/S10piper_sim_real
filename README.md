@@ -11,11 +11,11 @@
 
 English | [简体中文](README_CN.md)
 
-<table>
+<table width="100%">
   <tr>
-    <td align="center"><strong>Sim-to-Sim</strong><br><img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 and Piper coordinated simulation demo" width="420"></td>
-    <td align="center"><strong>Real-robot demo 1</strong><br><a href="docs/videos/s10_piper_real_demo_2.mp4"><img src="docs/videos/s10_piper_real_demo_2.gif" alt="S10 and Piper real-robot demo 2" width="420"></a></td>
-    <td align="center"><strong>Real-robot demo 2</strong><br><a href="docs/videos/s10_piper_real_demo_1.mp4"><img src="docs/videos/s10_piper_real_demo_1.gif" alt="S10 and Piper real-robot demo 1" width="420"></a></td>
+    <td align="center" width="33%"><strong>Sim-to-Sim</strong><br><img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 and Piper coordinated simulation demo" width="100%"></td>
+    <td align="center" width="33%"><strong>Real-robot demo 1</strong><br><a href="docs/videos/s10_piper_real_demo_2.mp4"><img src="docs/videos/s10_piper_real_demo_2.gif" alt="S10 and Piper real-robot demo 2" width="100%"></a></td>
+    <td align="center" width="33%"><strong>Real-robot demo 2</strong><br><a href="docs/videos/s10_piper_real_demo_1.mp4"><img src="docs/videos/s10_piper_real_demo_1.gif" alt="S10 and Piper real-robot demo 1" width="100%"></a></td>
   </tr>
 </table>
 
@@ -31,7 +31,7 @@ Maintenance notes for AI coding assistants and repository maintainers are collec
 
 ```bash
 cd "$HOME"
-git clone https://github.com/li269150/S10piper_sim_real.git
+git clone https://github.com/DeepRoboticsLab/s10-piper-sdk.git S10piper_sim_real
 cd S10piper_sim_real
 ```
 
