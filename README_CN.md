@@ -13,9 +13,9 @@
 
 <table width="100%">
   <tr>
-    <td align="center" width="33%"><strong>Sim-to-Sim</strong><br><img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 与 Piper 足臂协同仿真演示" width="260"></td>
-    <td align="center" width="33%"><strong>实物演示 1</strong><br><a href="docs/videos/s10_piper_real_demo_2.mp4"><img src="docs/videos/s10_piper_real_demo_2.gif" alt="S10 与 Piper 实物演示 2" width="260"></a></td>
-    <td align="center" width="33%"><strong>实物演示 2</strong><br><a href="docs/videos/s10_piper_real_demo_1.mp4"><img src="docs/videos/s10_piper_real_demo_1.gif" alt="S10 与 Piper 实物演示 1" width="260"></a></td>
+    <td align="center" width="33%"><strong>Sim-to-Sim</strong><br><img src="docs/images/s10_piper_demo_1_2x.gif" alt="S10 与 Piper 足臂协同仿真演示" width="245"></td>
+    <td align="center" width="33%"><strong>实物演示 1</strong><br><a href="docs/videos/s10_piper_real_demo_2.mp4"><img src="docs/videos/s10_piper_real_demo_2.gif" alt="S10 与 Piper 实物演示 2" width="245"></a></td>
+    <td align="center" width="33%"><strong>实物演示 2</strong><br><a href="docs/videos/s10_piper_real_demo_1.mp4"><img src="docs/videos/s10_piper_real_demo_1.gif" alt="S10 与 Piper 实物演示 1" width="245"></a></td>
   </tr>
 </table>
 
