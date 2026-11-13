@@ -48,9 +48,7 @@ sudo apt install -y build-essential cmake python3-dev \
   libgl1 libgl1-mesa-dri libglfw3 libx11-6 libxrandr2 libxinerama1 libxcursor1 libxi6  # Install build and graphics dependencies
 conda create -n s10 python=3.10 pip -y  # Create the Python 3.10 simulation environment; run once
 conda activate s10  # Activate the simulation environment
-unset PYTHONPATH PYTHONHOME  # Keep system/ROS Python packages out of this simulation terminal
 python -m pip install -r sim/requirements-lock.txt  # Install the pinned simulation dependencies
-python -m pip check  # Check for Python dependency conflicts
 cd sim  # Enter the simulation directory
 ./build.sh  # Build the simulation with -j20
 ./run.sh  # Start the simulation and accept keyboard input in this terminal
