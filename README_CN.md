@@ -48,9 +48,8 @@ sudo apt install -y build-essential cmake python3-dev \
   libgl1 libgl1-mesa-dri libglfw3 libx11-6 libxrandr2 libxinerama1 libxcursor1 libxi6  # 安装编译和图形依赖
 conda create -n s10 python=3.10 pip -y  # 创建 Python 3.10 仿真环境，只需执行一次
 conda activate s10  # 激活仿真环境
-unset PYTHONPATH PYTHONHOME  # 避免当前仿真终端加载系统或 ROS 的 Python 包
 python -m pip install -r sim/requirements-lock.txt  # 安装指定版本的仿真依赖
-python -m pip check  # 检查依赖是否冲突
+
 cd sim  # 进入仿真目录
 ./build.sh  # 编译仿真程序，使用 -j20
 ./run.sh  # 打开仿真，并在当前终端接收键盘输入
@@ -60,7 +59,6 @@ cd sim  # 进入仿真目录
 
 ```bash
 conda activate s10  # 激活已安装依赖的环境
-unset PYTHONPATH PYTHONHOME  # 避免当前仿真终端加载系统或 ROS 的 Python 包
 cd "$HOME/S10piper_sim_real/sim"  # 进入仿真目录
 ./run.sh  # 启动仿真，不需要连接实物
 ```
